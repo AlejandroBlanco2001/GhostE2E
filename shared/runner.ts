@@ -17,9 +17,6 @@ export async function startGhost() {
     spawnSync('docker', rargs);
     out = spawnSync('docker', sargs, { encoding: 'utf8' });
 
-    // console log the command
-    console.log(`docker ${sargs.join(' ')}`);
-
     if (out.status !== 0) {
         throw new Error(`Failed to start docker container: ${out.stderr}`);
     } else {
@@ -32,7 +29,7 @@ export async function startGhost() {
     if (child.stdout) {
         for await (let line of child.stdout) {
             let l = line.toString('utf8').trim()
-            console.debug(l)
+            // console.debug(l)
             if (l.includes('Ghost URL Service Ready')) {
                 // Once it's ready return and the test can start
                 console.log('Ghost ready for testing');
