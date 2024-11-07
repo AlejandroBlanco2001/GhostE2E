@@ -30,7 +30,7 @@ export async function startGhost() {
         for await (let line of child.stdout) {
             let l = line.toString('utf8').trim()
             // console.debug(l)
-            if (l.includes('Ghost URL Service Ready')) {
+            if (l.includes('Ghost booted')) {
                 // Once it's ready return and the test can start
                 console.log('Ghost ready for testing');
                 child.kill();

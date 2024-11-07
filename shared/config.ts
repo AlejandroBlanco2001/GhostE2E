@@ -1,6 +1,5 @@
 export const VERSION = process.env.GHOST_VERSION || '5.96.0';
 export const PORT = parseInt(process.env.GHOST_PORT || '9333')
-export const VISUAL_REGRESSION_TESTING = Boolean(process.env.GHOST_VRT || false);
 export const CI = Boolean(process.env.CI || false);
 export const URL = (process.env.GHOST_URL || 'http://localhost:' + PORT.toString()).replace(/\/$/, '');
 export const IMAGE = `ghost:${VERSION}`;
@@ -19,7 +18,7 @@ export const Urls = {
 
 export const SiteConfig = {
     siteTitle: process.env.GHOST_SITE_NAME || 'Testing Site',
-    password: process.env.GHOST_PASSWORD || 'Very_Strong1!',
+    password: process.env.GHOST_PASSWORD || 'adminadmin',
     email: process.env.GHOST_EMAIL || 'tester@tester.com',
-    name: process.env.GHOST_SITE_NAME || 'Testing Site',
+    name: process.env.GHOST_SITE_NAME || 'Testing Dude',
 } as const
