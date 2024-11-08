@@ -1,23 +1,21 @@
-/*
-TEST functioning
-*/
-
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { Urls } from "../../shared/config";
 
-test("See if setup correctly", async ({ page }) => {
+test("Verify setup is correctly configured", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
+    // Open login page and log in
     await loginPage.open();
     await loginPage.login();
-    expect(await loginPage.userIsLoggedIn()).toBeTruthy();
+    await expect(loginPage.userIsLoggedIn()).resolves.toBeTruthy();
 
+    // Navigate to the dashboard and wait for it to fully load
     await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
     await takeScreenshot(page);
 
-    const navbar = await page.locator("[data-test-nav-menu='main']");
-
-    expect(await navbar.isVisible()).toBeTruthy();
+    // Locate and verify the navbar is visible
+    const navbar = page.locator("[data-test-nav-menu='main']");
+    await expect(navbar).toBeVisible({ timeout: 5000 }); // Explicit wait with timeout for reliability
 });

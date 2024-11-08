@@ -7,13 +7,14 @@ export const CNAME = `ghost-testing`;
 
 export const Urls = {
     main: URL,
-    signin: URL + "/ghost/#/signin",
-    setup: URL + "/ghost/#/setup",
-    dashboard: URL + "/ghost/#/dashboard",
-    "member/list": URL + "/ghost/#/members",
-    "member/new": URL + "/ghost/#/members/new",
-    "post/list": URL + "/ghost/#/posts",
-    "tag/new": URL + "/ghost/#/tags/new",
+    signin: `${URL}/ghost/#/signin`,
+    setup: `${URL}/ghost/#/setup`,
+    dashboard: `${URL}/ghost/#/dashboard`,
+    "member/list": `${URL}/ghost/#/members`,
+    "member/new": `${URL}/ghost/#/members/new`,
+    "post/list": `${URL}/ghost/#/posts`,
+    "tag/new": `${URL}/ghost/#/tags/new`,
+    "post/new": `${URL}/ghost/#/editor/post`,
 } as const
 
 export const SiteConfig = {
