@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-pw-regular": "docker rm --force ghost-testing; npx playwright test --project=chromium --workers 1"
+    "test-pw-regular": "docker rm --force ghost-testing; npx playwright test --project=chromium --workers 1",
+    "test-pw-regular-windows": "docker rm --force ghost-testing & npx playwright test --project=chromium --workers 1"
   },
   "keywords": [],
   "author": "",
