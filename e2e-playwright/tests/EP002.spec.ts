@@ -4,23 +4,25 @@ import { LoginPage } from "../page/LoginPage";
 import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
 
-
-test("Check post table shows 1 result when no posts are created", async ({ page }) => {
+test("Given no posts are created, When I view the post table on the dashboard, Then it should show 1 result", async ({
+    page,
+}) => {
+    // Given: No posts are created, and the user is logged in
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
 
-    // Log in and verify
     await loginPage.open();
     await loginPage.login();
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // Navigate to dashboard and take screenshot
+    // When: I navigate to the dashboard
     await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
     await takeScreenshot(page);
 
-    // Verify post table content
+    // Then: The post table should be visible and show 1 result
     const postTable = await dashboardPage.getPostTable();
     await expect(postTable).toBeVisible({ timeout: 5000 });
 
-    expect(await dashboardPage.getNumberOfPostRowsNumber() === 1)
+    const numberOfRows = await dashboardPage.getNumberOfPostRowsNumber();
+    expect(numberOfRows).toBe(1);
 });

@@ -3,23 +3,23 @@ import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
-import { CreateMemberPage } from "../page/CreateMemberPage";
-import { CreatePostPage } from "../page/CreatePostPage";
 
-test("Check dashboard shows 0 results when no members are created", async ({ page }) => {
+test("Given no members are created, When I view the dashboard, Then it should show 0 results", async ({
+    page,
+}) => {
+    // Given: No members are created, and the user is logged in
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
 
-    // Log in and verify
     await loginPage.open();
     await loginPage.login();
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // Navigate to dashboard and take screenshot
+    // When: I navigate to the dashboard
     await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
     await takeScreenshot(page);
 
-    // Verify dashboard content
+    // Then: The dashboard should be visible and show 0 results
     const dashboard = await dashboardPage.getDashboard();
     await expect(dashboard).toBeVisible({ timeout: 5000 }); // explicit wait
 
