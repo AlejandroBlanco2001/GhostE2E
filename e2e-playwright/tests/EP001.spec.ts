@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
 
 test("Given no members are created, When I view the dashboard, Then it should show 0 results", async ({
@@ -16,7 +15,7 @@ test("Given no members are created, When I view the dashboard, Then it should sh
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
     // When: I navigate to the dashboard
-    await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
+    await dashboardPage.open();
     await takeScreenshot(page);
 
     // Then: The dashboard should be visible and show 0 results

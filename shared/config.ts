@@ -17,6 +17,8 @@ export const Urls = {
     "post/new": `${URL}/ghost/#/editor/post`,
 } as const
 
+export const DEFAULT_POST_NAME = "Coming soon"
+
 export const SiteConfig = {
     siteTitle: process.env.GHOST_SITE_NAME || 'Testing Site',
     password: process.env.GHOST_PASSWORD || 'adminadmin',

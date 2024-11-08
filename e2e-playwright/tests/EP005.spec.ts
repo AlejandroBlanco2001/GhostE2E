@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
 import { CreatePostPage } from "../page/CreatePostPage";
 
@@ -17,7 +16,7 @@ test("Given the dashboard is accessed, When I create a post, Then the activity l
     await loginPage.login();
 
     // Navigate to the dashboard and take a screenshot
-    await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
+    await dashboardPage.open();
     await takeScreenshot(page);
 
     // When: I create a new post

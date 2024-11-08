@@ -14,11 +14,13 @@ export class CreatePostPage {
         await this.page.goto(Urls["post/new"], { waitUntil: 'networkidle' });
     }
 
-    async fillForm(): Promise<void> {
+    async fillForm(): Promise<string> {
         // Fill in the title
         const postTitle = await this.getPostTitleTextArea();
+        const postName = faker.lorem.sentence();
+
         await expect(postTitle).toBeVisible({ timeout: 5000 }); // Wait for the title field to be visible
-        await postTitle.fill(faker.lorem.sentence());
+        await postTitle.fill(postName);
 
         // This accesibilty hack is to press the Enter key to move to the next field (the post editor), this doesnt have any test-id
         await postTitle.press('Enter');
@@ -27,6 +29,8 @@ export class CreatePostPage {
                 
         // Take a screenshot after filling the form
         await takeScreenshot(this.page);
+
+        return postName
     }
 
     async getPostTitleTextArea(): Promise<Locator> {

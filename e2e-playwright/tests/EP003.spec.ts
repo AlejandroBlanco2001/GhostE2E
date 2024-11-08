@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
@@ -19,7 +18,7 @@ test("Given no members exist, When I create a member, Then the dashboard should 
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
     // Navigate to the dashboard and verify it shows 0 members initially
-    await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
+    await dashboardPage.open();
     await takeScreenshot(page);
 
     const dashboard = await dashboardPage.getDashboard();
