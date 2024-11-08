@@ -3,14 +3,15 @@ import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
-import { CreateMemberPage } from "../page/CreateMemberPage";
+import { MembersPage } from "../page/MembersPage";
+import { faker } from "@faker-js/faker";
 
 test("Given no members exist, When I create a member, Then the dashboard should show 1 member", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
-    const createMemberPage = new CreateMemberPage(page);
+    const membersPage = new MembersPage(page);
 
     // Given: No members exist, and the user is logged in
     await loginPage.open();
@@ -27,8 +28,13 @@ test("Given no members exist, When I create a member, Then the dashboard should 
     expect(initialDashboardText).toContain("0");
 
     // When: I create a member
-    await createMemberPage.open();
-    await createMemberPage.fillForm();
+    await membersPage.open();
+    const fakeValues = {
+        name: faker.person.firstName(),
+        email: faker.internet.email(),
+        notes: faker.lorem.sentence(),
+    }
+    await membersPage.createMember(fakeValues.name, fakeValues.email, fakeValues.notes);
 
     // Then: Navigate to the dashboard and verify it shows 1 member
     await dashboardPage.open();
