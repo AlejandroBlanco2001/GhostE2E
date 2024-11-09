@@ -12,10 +12,12 @@ export const Urls = {
     dashboard: `${URL}/ghost/#/dashboard`,
     membersList: `${URL}/ghost/#/members`,
     membersCreate: `${URL}/ghost/#/members/new`,
+    listPage: `${URL}/ghost/#/pages`,
     "post/list": `${URL}/ghost/#/posts`,
     "tag/new": `${URL}/ghost/#/tags/new`,
     "post/new": `${URL}/ghost/#/editor/post`,
-} as const
+    pageNew: `${URL}/ghost/#/editor/page`,
+}
 
 export const DEFAULT_POST_NAME = "Coming soon"
 

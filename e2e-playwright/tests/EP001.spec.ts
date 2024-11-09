@@ -1,27 +1,38 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { DashboardPage } from "../page/DashboardPage";
+import { faker } from "@faker-js/faker";
+import { CreatePagePage } from "../page/CreatePagePage";
+import { PageListPage } from "../page/PageListPage";
 
-test("Given no members are created, When I view the dashboard, Then it should show 0 results", async ({
+test("Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
     page,
 }) => {
-    // Given: No members are created, and the user is logged in
     const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
+    const createPagePage = new CreatePagePage(page);
+    const pageListPage = new PageListPage(page);
 
+    // Given: No members exist, and the user is logged in
     await loginPage.open();
     await loginPage.login();
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // When: I navigate to the dashboard
-    await dashboardPage.open();
+    // And Navigate to the page 
+    await createPagePage.open();
+    await takeScreenshot(page);
+    
+    // When: I create a Page
+    const fakeValues = {
+        name: faker.lorem.sentence(),
+        paragraph: faker.lorem.paragraph(),
+    }
+    
+    await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
+    await createPagePage.publishPost();
+
+    // Then: Navigate to the ListPage page and verify it shows 1 page
+    await pageListPage.open();
     await takeScreenshot(page);
 
-    // Then: The dashboard should be visible and show 0 results
-    const dashboard = await dashboardPage.getDashboard();
-    await expect(dashboard).toBeVisible({ timeout: 5000 }); // explicit wait
-
-    const dashboardText = await dashboard.innerText();
-    expect(dashboardText).toContain("0");
+    expect(await page.innerText("body")).toContain(fakeValues.name);
 });

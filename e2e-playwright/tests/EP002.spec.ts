@@ -1,32 +1,62 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { DEFAULT_POST_NAME } from "../../shared/config";
-import { DashboardPage } from "../page/DashboardPage";
+import { faker } from "@faker-js/faker";
+import { CreatePagePage } from "../page/CreatePagePage";
+import { PageListPage } from "../page/PageListPage";
 
-test("Given no posts are created, When I view the post table on the dashboard, Then it should show the default post", async ({
+test("Given the no page created, When I create 2 pages, Then the page list should be sorted by creation time", async ({
     page,
 }) => {
-    // Given: No posts are created, and the user is logged in
     const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
+    const createPagePage = new CreatePagePage(page);
+    const pageListPage = new PageListPage(page);
 
+    // Given: No members exist, and the user is logged in
     await loginPage.open();
     await loginPage.login();
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // When: I navigate to the dashboard
-    await dashboardPage.open();
+    // And Navigate to the page 
+    await createPagePage.open();
+    await takeScreenshot(page);
+    
+    // When: I create a Page
+    let firstPostTitle  = faker.lorem.sentence();
+    let firstPostParagraph = faker.lorem.paragraph();
+
+    let fakeValues = {
+        name: firstPostTitle,
+        paragraph: firstPostParagraph,
+    }
+    
+    await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
+    await createPagePage.publishPost();
+
+    await pageListPage.open();
     await takeScreenshot(page);
 
-    // Then: The post table should be visible and show 1 result
-    const postTable = await dashboardPage.getPostTable();
-    await expect(postTable).toBeVisible({ timeout: 5000 });
+    expect(await page.innerText("body")).toContain(fakeValues.name);
 
-    const postTableInnerText = await postTable.innerText();
+    // When I create a new page after the first one
+    await createPagePage.open();
+    
+    const secondPostTitle  = faker.lorem.sentence();
+    const secondPostParagraph = faker.lorem.paragraph();
 
-    // Wait for the seconds for waiting the post to be rendered 
-    await page.waitForTimeout(2000);
+    fakeValues = {
+        name: secondPostTitle,
+        paragraph: secondPostParagraph,
+    }
+    
+    
+    await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
+    await createPagePage.publishPost();
 
-    expect(postTableInnerText).toContain(DEFAULT_POST_NAME);
+    await pageListPage.open();
+
+    const recentPage = await pageListPage.getPageTableRows();
+
+    expect(await recentPage[0].innerText()).toContain(secondPostTitle);
+    expect(await recentPage[1].innerText()).toContain(firstPostTitle);
 });
