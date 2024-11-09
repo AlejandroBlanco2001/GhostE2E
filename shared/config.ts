@@ -19,7 +19,7 @@ export const Urls = {
 
 export const SiteConfig = {
     siteTitle: process.env.GHOST_SITE_NAME || 'Testing Site',
-    password: process.env.GHOST_PASSWORD || 'adminadmin',
+    password: process.env.GHOST_PASSWORD || 'VeryStrong!1',
     email: process.env.GHOST_EMAIL || 'tester@tester.com',
     name: process.env.GHOST_SITE_NAME || 'Testing Dude',
 } as const

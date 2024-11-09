@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "kraken-compile": "npx tsc --build ./features/web_src/tsconfig.json",
+    "kraken": "docker rm --force ghost-testing; npm run kraken-compile && npx ts-node shared/krakenRunner.ts",
     "test-pw-regular": "docker rm --force ghost-testing; npx playwright test --project=chromium --workers 1",
     "test-pw-regular-windows": "docker rm --force ghost-testing & npx playwright test --project=chromium --workers 1"
   },
@@ -11,10 +13,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^9.2.0",
     "@playwright/test": "^1.48.2",
-    "@types/node": "^22.9.0"
+    "@types/node": "^22.9.0",
+    "kraken-node": "^1.0.24",
+    "source-map-loader": "^3.0.1",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.3.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.2.0"
+    "@types/express": "^4.17.13",
+    "@types/nunjucks": "^3.2.1",
+    "@types/resemblejs": "^4.1.0",
+    "chokidar": "^3.5.3",
+    "commander": "^9.2.0",
+    "express": "^4.18.1",
+    "nunjucks": "^3.2.3",
+    "resemblejs": "^4.1.0"
   }
 }
