@@ -34,6 +34,12 @@ export class MembersPage {
         }
     }
 
+    async openMember(email: string) {
+        await this.open()
+        await takeScreenshot(this.page);
+        await this.containsEmail(email).click();
+    }
+
     containsName(name: string): Locator {
         return this.page.locator('h3', { hasText: name })
     }
@@ -49,6 +55,18 @@ export class MembersPage {
 
         await this.name.fill(name);
         await this.email.fill(email);
+        await this.notes.fill(notes);
+
+        await this.save.click();
+        await this.page.waitForLoadState('networkidle');
+        await takeScreenshot(this.page);
+    }
+
+    async editMember(email: string, name: string, newEmail: string, notes: string) {
+        await this.openMember(email);
+
+        await this.name.fill(name);
+        await this.email.fill(newEmail);
         await this.notes.fill(notes);
 
         await this.save.click();
