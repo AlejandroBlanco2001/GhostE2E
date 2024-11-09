@@ -55,4 +55,11 @@ export class MembersPage {
         await this.page.waitForLoadState('networkidle');
         await takeScreenshot(this.page);
     }
+
+    async creationStatus(): Promise<boolean> {
+        if (await this.retry.count() == 1) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,9 +1,9 @@
 name: Kraken Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 jobs:
   test:
     timeout-minutes: 60
@@ -11,18 +11,18 @@ jobs:
     env:
       GHOST_VERSION: 5.96.0
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - uses: nanasess/setup-chromedriver@v2
-    - name: Setup docker
-      uses: docker-practice/actions-setup-docker@master
-    - name: Pull docker image
-      run: docker image pull ghost:${GHOST_VERSION}
-    - name: Install system dependencies
-      run: sudo apt-get install -y android-tools-adb
-    - name: Install dependencies
-      run: npm ci
-    - name: Run kraken tests
-      run: npm run kraken
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - uses: nanasess/setup-chromedriver@v2
+      - name: Setup docker
+        uses: docker-practice/actions-setup-docker@master
+      - name: Pull docker image
+        run: docker image pull ghost:${GHOST_VERSION}
+      - name: Install system dependencies
+        run: sudo apt-get install -y android-tools-adb
+      - name: Install dependencies
+        run: npm ci
+      - name: Run kraken tests
+        run: npm run kraken
