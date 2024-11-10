@@ -1,9 +1,6 @@
 import { Page, Locator } from "@playwright/test";
 import { Urls } from "../../shared/config";
 import { faker } from '@faker-js/faker';
-import { promises } from "fs";
-import { text } from "stream/consumers";
-import { takeScreenshot } from "../util/util";
 
 export class PagesEditor{
     readonly page: Page;
