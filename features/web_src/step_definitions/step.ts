@@ -8,6 +8,8 @@ import { Urls } from '../../../shared/config';
 const isCI = process.env.CI || false;
 const defaultTiemout = isCI ? 15000 : 5000;
 
+let numberOfMembers = 0;
+
 type ValueGeneratorCollection = {
   [key: string]: () => string
 }
@@ -29,6 +31,7 @@ const Selectors: SelectorsCollection = {
   // Dashboard menu
   "dashborad/menu/member": 'a[href="#/members/"]',
   "dashborad/menu/post": 'a[href="#/posts/"]',
+  "dashborad/menu/page": 'a[href="#/pages/"]',
 
   ///////////////////////////////////MEMBERS///////////////////////////////////
   "member/list/new": 'a[href="#/members/new/"]',
@@ -57,6 +60,13 @@ const Selectors: SelectorsCollection = {
   "member/action/list actions/remove label confirm": "//button/span[normalize-space()='Remove Label']",
   "member/action/list actions/remove label confirm close": "button[class='gh-btn gh-btn-black']",
   "member/see/save-retry": "//button[contains(., 'Retry')]",
+  ///////////////////////////////////POSTS///////////////////////////////////
+  "post/list/new": 'a[href="#/editor/post/"]',
+  "post/action/save": "//button[@data-test-button='publish-flow']",
+  "post/action/review": "//button[@data-test-button='continue']",
+  "post/action/final publish": "//button[@data-test-button='confirm-publish']",
+  ///////////////////////////////////PAGES///////////////////////////////////
+  "page/list/new": 'a[href="#/editor/page/"]',
 } as const
 
 function GetSelector(selector: string): string {
@@ -146,6 +156,22 @@ const Navigators: Record<string, Function> = {
       await p;
     }
   },
+  pages: async (page: Page) => {
+    if (!page.url().includes(Urls.listPage)) {
+      await NavigateTo(page, "dashboard");
+      let p = page.waitForNavigation({ waitUntil: 'networkidle0' });
+      ClickElement(page, GetSelector("dashborad/menu/page"));
+      await p;
+    }
+  },
+  "create page": async (page: Page) => {
+    console.log(page.url())
+    if (page.url().includes(Urls.listPage)) {
+      await ClickElement(page, GetSelector("page/list/new"));
+    } else {
+      throw new Error("Not on page list page");
+    }
+  },
   "create post": async (page: Page) => {
     if (page.url().includes(Urls["post/list"])) {
       await ClickElement(page, GetSelector("post/list/new"));
@@ -232,6 +258,128 @@ When(/I (fill|set) the ("(.*)?") ("(.*)?") to ("(.*)?")/, async function (this: 
   await p;
 });
 
+When('I create the post with title {string} and paragraph {string}', async function (this: KrakenWorld, string: string, string2: string) {
+  // Get the only textarea
+  const textarea = await this.page.$('textarea');
+
+  if (!textarea) {
+    throw new Error('No textarea found');
+  }
+
+  // Fill the title
+  await textarea?.type(string);
+
+  // Press the enter key to go to the next field
+  await this.page.keyboard.press('Enter');
+
+  // Fill the text inside the current cursor area
+  await this.page.keyboard.type(string2);  
+
+  await this.page.waitForTimeout(1000);
+});
+
+async function findButtonForce(page: Page, expectedText: string) {
+  const allButtons = await page.$$('button');
+
+  for (const currentButton of allButtons) {
+    const buttonText = await currentButton.$('span');
+    if (buttonText) {
+      let text = await page.evaluate(element => element.innerText, buttonText);
+      text = text.trim();
+
+      if (text === expectedText) {
+        return currentButton;
+      }
+    }
+  }
+
+  throw new Error(`Couldn't find the button with text ${expectedText}`);
+}
+
+When('I save the {string}', async function (this: KrakenWorld, string: string) {
+  const publishButton = await findButtonForce(this.page, 'Publish')
+
+  publishButton.click();
+
+  await this.page.waitForTimeout(1000);
+
+  const continueButton = await findButtonForce(this.page, 'Continue, final review →')
+  
+  continueButton.click();
+
+  await this.page.waitForTimeout(1000);
+
+  const finalPublishButton = await findButtonForce(this.page, `Publish ${string}, right now`)
+
+  finalPublishButton.click();
+
+  await this.page.waitForTimeout(2000);
+
+  await this.page.keyboard.press('Escape');
+}); 
+
+When("I should see the {string} in that order sorted in the current page", async function (this: KrakenWorld, words: string) {
+  const rows = await this.page.$$('.gh-posts-list-item');
+  const items = words.split(',');
+  
+  items.forEach(async (row, index) => {
+    const currentRow = rows[index];
+
+    if (!currentRow) {
+      throw new Error(`Expected ${row} but got nothing`);
+    }
+
+    const text = await this.page.evaluate(element => element.innerText.trim(), currentRow);
+
+    if (!text.includes(row.trim())) {
+      throw new Error(`Expected "${row}" but got "${text}"`);
+    }    
+  })
+})
+
+When("I should see the number of members in the dashboard", async function (this: KrakenWorld) {
+  const innerText = await this.page.evaluate(() => document.body.innerText);
+
+  if(!innerText){
+    throw new Error(`There is no text in the current page`);
+  }
+
+  if(!innerText.includes(numberOfMembers.toString())) {
+    throw new Error(`The number of members is not correct`);
+  }
+});
+
+When("I record the number of members currently", async function (this: KrakenWorld) {
+  // Wait for the <th> elements to be available
+  await this.page.waitForSelector('th');
+
+  // Grab all <th> elements on the page
+  const ths = await this.page.$$('th');
+  
+  // Loop through each <th> element
+  for (let th of ths) {
+    // Get the inner text of the <th> element
+    const thText = await this.page.evaluate(element => element.innerText.trim(), th);
+    console.log(thText);  // Log to see if we get anything
+
+    // Check if the <th> text contains 'Members'
+    if (thText.includes('MEMBERS')) {
+      // Extract the number from the first part of the text (assuming it's the first word)
+      const thTextSplitted = thText.split(' ')[0];
+      const numberOfMembers = parseInt(thTextSplitted, 10);
+
+      console.log('Number of members: ', numberOfMembers);
+      
+      // Return the number (you could save it in a context or do something with it)
+      return numberOfMembers;
+    }
+  }
+
+  // If no element with 'Members' was found, throw an error
+  throw new Error('No members found');
+});
+
+
 When('I {string} the {string}', async function (this: KrakenWorld, action: string, scope: string) {
   let selector = GetSelector(scope + '/action/' + action)
   if (typeof selector === 'string') {
@@ -264,6 +412,17 @@ When('I delete the {string}', async function (this: KrakenWorld, scope: string) 
   }
 });
 
+Then('I should see the {string} in the current page', async function (this: KrakenWorld, string: string) {
+  const innerText = await this.page.evaluate(() => document.body.innerText);
+
+  if(!innerText){
+    throw new Error(`There is no text in the current page`);
+  }
+
+  if (!innerText.includes(string)) {
+    throw new Error(`The text ${string} is not in the current page`);
+  }
+});
 
 //    I should   "see"  the "member"  "email" "|FAKE_EMAIL|1" in the "list"
 Then('I should {string} the {string} {string} {string} in the {string}', async function (this: KrakenWorld, verb: string, scope: string, selector_key: string, value: string, view: string) {
