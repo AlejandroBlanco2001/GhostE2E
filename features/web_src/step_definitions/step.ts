@@ -8,6 +8,8 @@ import { Urls } from '../../../shared/config';
 const isCI = process.env.CI || false;
 const defaultTiemout = isCI ? 15000 : 5000;
 
+let numberOfMembers = 0;
+
 type ValueGeneratorCollection = {
   [key: string]: () => string
 }
@@ -334,6 +336,49 @@ When("I should see the {string} in that order sorted in the current page", async
     }    
   })
 })
+
+When("I should see the number of members in the dashboard", async function (this: KrakenWorld) {
+  const innerText = await this.page.evaluate(() => document.body.innerText);
+
+  if(!innerText){
+    throw new Error(`There is no text in the current page`);
+  }
+
+  if(!innerText.includes(numberOfMembers.toString())) {
+    throw new Error(`The number of members is not correct`);
+  }
+});
+
+When("I record the number of members currently", async function (this: KrakenWorld) {
+  // Wait for the <th> elements to be available
+  await this.page.waitForSelector('th');
+
+  // Grab all <th> elements on the page
+  const ths = await this.page.$$('th');
+  
+  // Loop through each <th> element
+  for (let th of ths) {
+    // Get the inner text of the <th> element
+    const thText = await this.page.evaluate(element => element.innerText.trim(), th);
+    console.log(thText);  // Log to see if we get anything
+
+    // Check if the <th> text contains 'Members'
+    if (thText.includes('MEMBERS')) {
+      // Extract the number from the first part of the text (assuming it's the first word)
+      const thTextSplitted = thText.split(' ')[0];
+      const numberOfMembers = parseInt(thTextSplitted, 10);
+
+      console.log('Number of members: ', numberOfMembers);
+      
+      // Return the number (you could save it in a context or do something with it)
+      return numberOfMembers;
+    }
+  }
+
+  // If no element with 'Members' was found, throw an error
+  throw new Error('No members found');
+});
+
 
 When('I {string} the {string}', async function (this: KrakenWorld, action: string, scope: string) {
   let selector = GetSelector(scope + '/action/' + action)
