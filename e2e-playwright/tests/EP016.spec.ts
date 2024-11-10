@@ -23,7 +23,7 @@ test("Create new page and edit it", async ({ page }) => {
     await takeScreenshot(page);
 
     // Add new section
-    await page.goto(Urls.pages,{ waitUntil: "load" });
+    await page.goto(Urls.listPage,{ waitUntil: "load" });
     await page.waitForTimeout(500);
     await pagesEditor.editPage(newPageName);
     let newTitle = "Este título se creó editando la página";

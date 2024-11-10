@@ -13,7 +13,7 @@ export class PagesEditor{
     }
 
     async open() {
-        await this.page.goto(Urls.pages, { waitUntil: "load" });
+        await this.page.goto(Urls.listPage, { waitUntil: "load" });
     }
 
     async getCreatedPages(): Promise<string> {
