@@ -5,25 +5,25 @@ import { PagesEditor } from "../page/PagesEditor";
 import { Urls, URL } from "../../shared/config";
 
 
-test("Create new page and edit it", async ({ page }) => {
+test("EP016 Create new page and edit it", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const pagesEditor = new PagesEditor(page);
 
     // Chek if user is logged in
     await loginPage.open();
     await loginPage.login();
-    
+
     // Navigate to Pages Editor and Create a new Page
     await pagesEditor.open();
     let newPageName = "Prueba edicion contenido";
     await pagesEditor.createTestPage(newPageName);
 
     // Screenshot the inicial state of the new page
-    await page.goto(`${URL}/prueba-edicion-contenido`,{ waitUntil: "load" });
+    await page.goto(`${URL}/prueba-edicion-contenido`, { waitUntil: "load" });
     await takeScreenshot(page);
 
     // Add new section
-    await page.goto(Urls.listPage,{ waitUntil: "load" });
+    await page.goto(Urls.listPage, { waitUntil: "load" });
     await page.waitForTimeout(500);
     await pagesEditor.editPage(newPageName);
     let newTitle = "Este título se creó editando la página";
@@ -37,21 +37,21 @@ test("Create new page and edit it", async ({ page }) => {
     await page.keyboard.type(newParagraph);
     await page.click("text='Update'");
     await page.waitForTimeout(1000)
-    
-    
+
+
     // verify if new page contains the new section 
-    await page.goto(`${URL}/prueba-edicion-contenido/`,{ waitUntil: "load" });
+    await page.goto(`${URL}/prueba-edicion-contenido/`, { waitUntil: "load" });
     await takeScreenshot(page);
     let container = page.locator('.gh-content');
     let contenidos = await container.allInnerTexts();
 
     let titleExists = false;
     let paragraphExists = false;
-    for(let i = 0; i<contenidos.length;i++){
-        if(contenidos[i]==newTitle){ titleExists=true };
-        if(contenidos[i]==newParagraph){paragraphExists=true};
+    for (let i = 0; i < contenidos.length; i++) {
+        if (contenidos[i] == newTitle) { titleExists = true };
+        if (contenidos[i] == newParagraph) { paragraphExists = true };
     }
     expect(titleExists).toBeTruthy;
     expect(paragraphExists).toBeTruthy;
-    
+
 });

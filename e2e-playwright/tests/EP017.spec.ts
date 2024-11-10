@@ -5,14 +5,14 @@ import { PagesEditor } from "../page/PagesEditor";
 import { Urls, URL } from "../../shared/config";
 
 
-test("Unpublish Page", async ({ page }) => {
+test("EP017 Unpublish Page", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const pagesEditor = new PagesEditor(page);
 
     // Chek if user is logged in
     await loginPage.open();
     await loginPage.login();
-    
+
     // Navigate to Pages Editor and Create a new Page
     await pagesEditor.open();
     let newPageName = "Pagina retornar borrador";

@@ -5,7 +5,7 @@ import { DashboardPage } from "../page/DashboardPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
 
-test("Given no members exist, When I create a member, Then the dashboard should show 1 member", async ({
+test("EP003 Given no members exist, When I create a member, Then the dashboard should show 1 member", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);

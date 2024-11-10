@@ -5,7 +5,7 @@ import { DashboardPage } from "../page/DashboardPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
 
-test("Given the dashboard is accessed, When I create a member, Then the activity log should contain a 'Created manually' action", async ({
+test("EP005 Given the dashboard is accessed, When I create a member, Then the activity log should contain a 'Created manually' action", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);

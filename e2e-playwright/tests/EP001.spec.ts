@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import { CreatePagePage } from "../page/CreatePagePage";
 import { PageListPage } from "../page/PageListPage";
 
-test("Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
+test("EP001 Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);

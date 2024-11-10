@@ -4,7 +4,7 @@ import { LoginPage } from "../page/LoginPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
 
-test("Edit member with repeated email", async ({
+test("EP011 Edit member with duplicate email", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);

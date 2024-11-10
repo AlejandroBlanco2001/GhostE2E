@@ -5,14 +5,14 @@ import { PagesEditor } from "../page/PagesEditor";
 import { URL } from "../../shared/config";
 
 
-test("Check new page is visible in Pages Editor", async ({ page }) => {
+test("EP014 Check new page is visible in Pages Editor", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const pagesEditor = new PagesEditor(page);
 
     // Chek if user is logged in
     await loginPage.open();
     await loginPage.login();
-    
+
     // Navigate to Pages Editor and Create a new Page
     await pagesEditor.open();
     await takeScreenshot(page);

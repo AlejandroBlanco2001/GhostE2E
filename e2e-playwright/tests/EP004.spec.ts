@@ -5,7 +5,7 @@ import { DashboardPage } from "../page/DashboardPage";
 import { CreatePostPage } from "../page/CreatePostPage";
 
 
-test("Given no post exists, When I create a new post, Then the post table should show 1 result", async ({
+test("EP004 Given no post exists, When I create a new post, Then the post table should show 1 result", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);

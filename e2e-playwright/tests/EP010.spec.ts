@@ -4,7 +4,7 @@ import { LoginPage } from "../page/LoginPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
 
-test("Edit member", async ({
+test("EP010 Edit member", async ({
     page,
 }) => {
     const loginPage = new LoginPage(page);
