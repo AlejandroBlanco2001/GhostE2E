@@ -163,7 +163,7 @@ const Navigators: Record<string, Function> = {
     }
   },
   "create page": async (page: Page) => {
-    if (page.url().includes(Urls.pageNew)) {
+    if (page.url().includes(Urls.listPage)) {
       await ClickElement(page, GetSelector("page/list/new"));
     } else {
       throw new Error("Not on page list page");
