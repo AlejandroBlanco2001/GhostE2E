@@ -19,6 +19,13 @@ async function firstLogin(page: Page) {
   console.log('Ghost site setup complete');
 
   page.goto(Urls.dashboard);
+
+  // Skip onboarding
+  const skipOnboarding = await page.$('#ob-skip');
+
+  if(skipOnboarding) {
+    await skipOnboarding.click();
+  }
 }
 
 async function normalLogin(page: Page) {
@@ -35,6 +42,13 @@ async function normalLogin(page: Page) {
   await page.type('input[type="password"]', SiteConfig.password);
   await page.click('button[type="submit"]');
   await page.waitForNavigation({ waitUntil: 'networkidle0' });
+
+  // Skip onboarding
+  const skipOnboarding = await page.$('#ob-skip');
+
+  if(skipOnboarding) {
+    await skipOnboarding.click();
+  }
 }
 
 export async function Login(page: Page) {

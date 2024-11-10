@@ -57,6 +57,11 @@ const Selectors: SelectorsCollection = {
   "member/action/list actions/remove label confirm": "//button/span[normalize-space()='Remove Label']",
   "member/action/list actions/remove label confirm close": "button[class='gh-btn gh-btn-black']",
   "member/see/save-retry": "//button[contains(., 'Retry')]",
+  ///////////////////////////////////POSTS///////////////////////////////////
+  "post/list/new": 'a[href="#/editor/post/"]',
+  "post/action/save": "//button/span[contains(., 'Publish')]",
+  "post/action/review": "//button/span[contains(., 'Continue, final review →')]",
+  "post/action/final publish": "//button/span[contains(., 'Publish page, right now')]",
 } as const
 
 function GetSelector(selector: string): string {
@@ -146,6 +151,13 @@ const Navigators: Record<string, Function> = {
       await p;
     }
   },
+  "create page": async (page: Page) => {
+    if (page.url().includes(Urls.pageNew)) {
+      await ClickElement(page, GetSelector("page/list/new"));
+    } else {
+      throw new Error("Not on posts list page");
+    }
+  },
   "create post": async (page: Page) => {
     if (page.url().includes(Urls["post/list"])) {
       await ClickElement(page, GetSelector("post/list/new"));
@@ -232,6 +244,56 @@ When(/I (fill|set) the ("(.*)?") ("(.*)?") to ("(.*)?")/, async function (this: 
   await p;
 });
 
+When('I create the post with title {string} and paragraph {string}', async function (this: KrakenWorld, string: string, string2: string) {
+  // Get the only textarea
+  const textarea = await this.page.$('textarea');
+
+  if (!textarea) {
+    throw new Error('No textarea found');
+  }
+
+  // Fill the title
+  await textarea?.type(string);
+
+  // Press the enter key to go to the next field
+  await this.page.keyboard.press('Enter');
+
+  // Fill the text inside the current cursor area
+  await this.page.keyboard.type(string2);  
+});
+
+When('I save the entry', async function (this: KrakenWorld) {
+  const publishButton = GetSelector("post/action/save");
+
+  const publishButtonElement = await getElement(this.page, publishButton);
+
+  if(!publishButtonElement){
+    throw new Error(`Couldn't find the publish button`);
+  }
+
+  publishButtonElement.click();
+
+  const continueButton = GetSelector("post/action/review");
+
+  const continueButtonElement = await getElement(this.page, continueButton);
+
+  if(!continueButtonElement){
+    throw new Error(`Couldn't find the continue button`);
+  }
+
+  continueButtonElement.click();
+
+  const finalPublishButton = GetSelector("post/action/final publish");
+
+  const finalPublishButtonElement = await getElement(this.page, finalPublishButton);
+
+  if(!finalPublishButtonElement){
+    throw new Error(`Couldn't find the final publish button`);
+  }
+
+  finalPublishButtonElement.click();
+}); 
+
 When('I {string} the {string}', async function (this: KrakenWorld, action: string, scope: string) {
   let selector = GetSelector(scope + '/action/' + action)
   if (typeof selector === 'string') {
@@ -264,6 +326,17 @@ When('I delete the {string}', async function (this: KrakenWorld, scope: string) 
   }
 });
 
+Then('I should see the {string} in the current page', async function (this: KrakenWorld, string: string) {
+  const innerText = await this.page.evaluate(() => document.body.innerText);
+
+  if(!innerText){
+    throw new Error(`There is no text in the current page`);
+  }
+
+  if (!innerText.includes(string)) {
+    throw new Error(`The text ${string} is not in the current page`);
+  }
+});
 
 //    I should   "see"  the "member"  "email" "|FAKE_EMAIL|1" in the "list"
 Then('I should {string} the {string} {string} {string} in the {string}', async function (this: KrakenWorld, verb: string, scope: string, selector_key: string, value: string, view: string) {
