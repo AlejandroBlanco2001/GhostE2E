@@ -10,6 +10,8 @@ export const Urls = {
     signin: `${URL}/ghost/#/signin`,
     setup: `${URL}/ghost/#/setup`,
     dashboard: `${URL}/ghost/#/dashboard`,
+    pages: `${URL}/ghost/#/pages`,
+    settings: `${URL}/ghost/#/settings`,
     "member/list": `${URL}/ghost/#/members`,
     "member/new": `${URL}/ghost/#/members/new`,
     "post/list": `${URL}/ghost/#/posts`,
