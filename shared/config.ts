@@ -10,18 +10,20 @@ export const Urls = {
     signin: `${URL}/ghost/#/signin`,
     setup: `${URL}/ghost/#/setup`,
     dashboard: `${URL}/ghost/#/dashboard`,
-    pages: `${URL}/ghost/#/pages`,
-    settings: `${URL}/ghost/#/settings`,
-    "member/list": `${URL}/ghost/#/members`,
-    "member/new": `${URL}/ghost/#/members/new`,
+    membersList: `${URL}/ghost/#/members`,
+    membersCreate: `${URL}/ghost/#/members/new`,
+    listPage: `${URL}/ghost/#/pages`,
     "post/list": `${URL}/ghost/#/posts`,
     "tag/new": `${URL}/ghost/#/tags/new`,
     "post/new": `${URL}/ghost/#/editor/post`,
-} as const
+    pageNew: `${URL}/ghost/#/editor/page`,
+}
+
+export const DEFAULT_POST_NAME = "Coming soon"
 
 export const SiteConfig = {
     siteTitle: process.env.GHOST_SITE_NAME || 'Testing Site',
-    password: process.env.GHOST_PASSWORD || 'adminadmin',
+    password: process.env.GHOST_PASSWORD || 'VeryStrong!1',
     email: process.env.GHOST_EMAIL || 'tester@tester.com',
     name: process.env.GHOST_SITE_NAME || 'Testing Dude',
 } as const

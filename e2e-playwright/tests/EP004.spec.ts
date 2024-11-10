@@ -1,41 +1,34 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { Urls } from "../../shared/config";
 import { DashboardPage } from "../page/DashboardPage";
 import { CreatePostPage } from "../page/CreatePostPage";
 
-test("Check that when creating a post the table shows 2 results", async ({ page }) => {
+
+test("Given no post exists, When I create a new post, Then the post table should show 1 result", async ({
+    page,
+}) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const createPostPage = new CreatePostPage(page);
 
-    // Log in and verify
+    // Given: User is logged in, and 1 post already exists
     await loginPage.open();
     await loginPage.login();
 
-    // Navigate to dashboard and take screenshot
-    await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
-    await takeScreenshot(page);
-
-    // Verify post table content
-    const postTable = await dashboardPage.getPostTable();
-    await expect(postTable).toBeVisible({ timeout: 5000 });
-
-    expect(await dashboardPage.getNumberOfPostRowsNumber() === 1)
-    
-    // Create a post
+    // When: I create a new post
     await createPostPage.open();
-    await createPostPage.fillForm();
+    const postCreatedName = await createPostPage.fillForm();
     await createPostPage.publishPost();
 
-    // Navigate to dashboard and take screenshot
+    // Then: Navigate to the dashboard and verify the post table shows 2 posts
     await dashboardPage.open();
     await takeScreenshot(page);
 
-    // Verify post table content
     const updatedPostTable = await dashboardPage.getPostTable();
     await expect(updatedPostTable).toBeVisible({ timeout: 5000 });
 
-    expect(await dashboardPage.getNumberOfPostRowsNumber() === 2)
-})
+    const dashboardPageInnerText = await page.innerText("body");
+
+    expect(dashboardPageInnerText).toContain(postCreatedName);
+});

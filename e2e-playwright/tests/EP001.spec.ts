@@ -1,28 +1,38 @@
 import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
-import { Urls } from "../../shared/config";
-import { DashboardPage } from "../page/DashboardPage";
-import { CreateMemberPage } from "../page/CreateMemberPage";
-import { CreatePostPage } from "../page/CreatePostPage";
+import { faker } from "@faker-js/faker";
+import { CreatePagePage } from "../page/CreatePagePage";
+import { PageListPage } from "../page/PageListPage";
 
-test("Check dashboard shows 0 results when no members are created", async ({ page }) => {
+test("Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
+    page,
+}) => {
     const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
+    const createPagePage = new CreatePagePage(page);
+    const pageListPage = new PageListPage(page);
 
-    // Log in and verify
+    // Given: No members exist, and the user is logged in
     await loginPage.open();
     await loginPage.login();
     expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // Navigate to dashboard and take screenshot
-    await page.goto(Urls.dashboard, { waitUntil: "networkidle" });
+    // And Navigate to the page 
+    await createPagePage.open();
+    await takeScreenshot(page);
+    
+    // When: I create a Page
+    const fakeValues = {
+        name: faker.lorem.sentence(),
+        paragraph: faker.lorem.paragraph(),
+    }
+    
+    await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
+    await createPagePage.publishPost();
+
+    // Then: Navigate to the ListPage page and verify it shows 1 page
+    await pageListPage.open();
     await takeScreenshot(page);
 
-    // Verify dashboard content
-    const dashboard = await dashboardPage.getDashboard();
-    await expect(dashboard).toBeVisible({ timeout: 5000 }); // explicit wait
-
-    const dashboardText = await dashboard.innerText();
-    expect(dashboardText).toContain("0");
+    expect(await page.innerText("body")).toContain(fakeValues.name);
 });

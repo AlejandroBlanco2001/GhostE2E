@@ -1,9 +1,9 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { SiteConfig, Urls } from "../../shared/config";
+import { URL } from "../../shared/config";
 import { takeScreenshot } from "../util/util";
 import { faker } from '@faker-js/faker';
 
-export class CreatePostPage {
+export class CreatePagePage {
     readonly page: Page;
 
     constructor(page: Page) {
@@ -11,13 +11,13 @@ export class CreatePostPage {
     }
 
     async open() {
-        await this.page.goto(Urls["post/new"], { waitUntil: 'networkidle' });
+        const pageNew = `${URL}/ghost/#/editor/page`
+        await this.page.goto(pageNew, { waitUntil: 'networkidle' });
     }
 
-    async fillForm(): Promise<string> {
+    async fillForm(postName: string = faker.lorem.sentence(), postParagraph: string = faker.lorem.paragraph()): Promise<string> {
         // Fill in the title
         const postTitle = await this.getPostTitleTextArea();
-        const postName = faker.lorem.sentence();
 
         await expect(postTitle).toBeVisible({ timeout: 5000 }); // Wait for the title field to be visible
         await postTitle.fill(postName);
@@ -25,7 +25,7 @@ export class CreatePostPage {
         // This accesibilty hack is to press the Enter key to move to the next field (the post editor), this doesnt have any test-id
         await postTitle.press('Enter');
 
-        await this.page.keyboard.type(faker.lorem.paragraph());
+        await this.page.keyboard.type(postParagraph);
                 
         // Take a screenshot after filling the form
         await takeScreenshot(this.page);
@@ -83,5 +83,5 @@ export class CreatePostPage {
         await this.page.waitForTimeout(2000)
 
         await this.page.keyboard.press('Escape')
-    }        
+    }
 }

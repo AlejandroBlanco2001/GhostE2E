@@ -28,6 +28,12 @@ export class LoginPage {
         await this.page.waitForLoadState('networkidle');
         console.log('Setup done');
         await takeScreenshot(this.page);
+
+        // check if there is <a href="#" class="gh-onboarding-skip" id="ob-skip">Skip onboarding</a>
+        if (await this.page.isVisible('a.gh-onboarding-skip')) {
+            await this.page.click('a.gh-onboarding-skip');
+            await this.page.waitForLoadState('networkidle');
+        }
     }
 
     async login() {

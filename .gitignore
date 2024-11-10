@@ -4,3 +4,11 @@ node_modules
 /blob-report/
 /playwright/.cache/
 screenshots
+reports
+
+features/**/**.js
+*.map
+.kraken/
+*.js
+*.d.ts
+*.tsbuildinfo
