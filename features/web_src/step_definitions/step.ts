@@ -163,6 +163,7 @@ const Navigators: Record<string, Function> = {
     }
   },
   "create page": async (page: Page) => {
+    console.log(page.url())
     if (page.url().includes(Urls.listPage)) {
       await ClickElement(page, GetSelector("page/list/new"));
     } else {
@@ -314,6 +315,25 @@ When('I save the {string}', async function (this: KrakenWorld, string: string) {
 
   await this.page.keyboard.press('Escape');
 }); 
+
+When("I should see the {string} in that order sorted in the current page", async function (this: KrakenWorld, words: string) {
+  const rows = await this.page.$$('.gh-posts-list-item');
+  const items = words.split(',');
+  
+  items.forEach(async (row, index) => {
+    const currentRow = rows[index];
+
+    if (!currentRow) {
+      throw new Error(`Expected ${row} but got nothing`);
+    }
+
+    const text = await this.page.evaluate(element => element.innerText.trim(), currentRow);
+
+    if (!text.includes(row.trim())) {
+      throw new Error(`Expected "${row}" but got "${text}"`);
+    }    
+  })
+})
 
 When('I {string} the {string}', async function (this: KrakenWorld, action: string, scope: string) {
   let selector = GetSelector(scope + '/action/' + action)
