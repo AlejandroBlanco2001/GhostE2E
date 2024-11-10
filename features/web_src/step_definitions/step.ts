@@ -67,6 +67,7 @@ const Selectors: SelectorsCollection = {
   "post/action/final publish": "//button[@data-test-button='confirm-publish']",
   ///////////////////////////////////PAGES///////////////////////////////////
   "page/list/new": 'a[href="#/editor/page/"]',
+  "pages/new page": "//a//span[text()='New page']",
 } as const
 
 function GetSelector(selector: string): string {
