@@ -8,7 +8,7 @@ Scenario: Login and create a member, and show the number of users in the dashboa
   # Create a Post
   When I navigate to the "create post" functionality
   And I create the post with title "New test" and paragraph "Some text"
-  And I save the entry
+  And I save the "post"
   And I wait for 3 seconds
   And I navigate to the "dashboard" functionality
 

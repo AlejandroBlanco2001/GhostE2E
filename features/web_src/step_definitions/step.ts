@@ -29,6 +29,7 @@ const Selectors: SelectorsCollection = {
   // Dashboard menu
   "dashborad/menu/member": 'a[href="#/members/"]',
   "dashborad/menu/post": 'a[href="#/posts/"]',
+  "dashborad/menu/page": 'a[href="#/pages/"]',
 
   ///////////////////////////////////MEMBERS///////////////////////////////////
   "member/list/new": 'a[href="#/members/new/"]',
@@ -59,9 +60,11 @@ const Selectors: SelectorsCollection = {
   "member/see/save-retry": "//button[contains(., 'Retry')]",
   ///////////////////////////////////POSTS///////////////////////////////////
   "post/list/new": 'a[href="#/editor/post/"]',
-  "post/action/save": "//button/span[contains(., 'Publish')]",
-  "post/action/review": "//button/span[contains(., 'Continue, final review →')]",
-  "post/action/final publish": "//button/span[contains(., 'Publish page, right now')]",
+  "post/action/save": "//button[@data-test-button='publish-flow']",
+  "post/action/review": "//button[@data-test-button='continue']",
+  "post/action/final publish": "//button[@data-test-button='confirm-publish']",
+  ///////////////////////////////////PAGES///////////////////////////////////
+  "page/list/new": 'a[href="#/editor/page/"]',
 } as const
 
 function GetSelector(selector: string): string {
@@ -151,11 +154,19 @@ const Navigators: Record<string, Function> = {
       await p;
     }
   },
+  pages: async (page: Page) => {
+    if (!page.url().includes(Urls.listPage)) {
+      await NavigateTo(page, "dashboard");
+      let p = page.waitForNavigation({ waitUntil: 'networkidle0' });
+      ClickElement(page, GetSelector("dashborad/menu/page"));
+      await p;
+    }
+  },
   "create page": async (page: Page) => {
     if (page.url().includes(Urls.pageNew)) {
       await ClickElement(page, GetSelector("page/list/new"));
     } else {
-      throw new Error("Not on posts list page");
+      throw new Error("Not on page list page");
     }
   },
   "create post": async (page: Page) => {
@@ -260,38 +271,48 @@ When('I create the post with title {string} and paragraph {string}', async funct
 
   // Fill the text inside the current cursor area
   await this.page.keyboard.type(string2);  
+
+  await this.page.waitForTimeout(1000);
 });
 
-When('I save the entry', async function (this: KrakenWorld) {
-  const publishButton = GetSelector("post/action/save");
+async function findButtonForce(page: Page, expectedText: string) {
+  const allButtons = await page.$$('button');
 
-  const publishButtonElement = await getElement(this.page, publishButton);
+  for (const currentButton of allButtons) {
+    const buttonText = await currentButton.$('span');
+    if (buttonText) {
+      let text = await page.evaluate(element => element.innerText, buttonText);
+      text = text.trim();
 
-  if(!publishButtonElement){
-    throw new Error(`Couldn't find the publish button`);
+      if (text === expectedText) {
+        return currentButton;
+      }
+    }
   }
 
-  publishButtonElement.click();
+  throw new Error(`Couldn't find the button with text ${expectedText}`);
+}
 
-  const continueButton = GetSelector("post/action/review");
+When('I save the {string}', async function (this: KrakenWorld, string: string) {
+  const publishButton = await findButtonForce(this.page, 'Publish')
 
-  const continueButtonElement = await getElement(this.page, continueButton);
+  publishButton.click();
 
-  if(!continueButtonElement){
-    throw new Error(`Couldn't find the continue button`);
-  }
+  await this.page.waitForTimeout(1000);
 
-  continueButtonElement.click();
+  const continueButton = await findButtonForce(this.page, 'Continue, final review →')
+  
+  continueButton.click();
 
-  const finalPublishButton = GetSelector("post/action/final publish");
+  await this.page.waitForTimeout(1000);
 
-  const finalPublishButtonElement = await getElement(this.page, finalPublishButton);
+  const finalPublishButton = await findButtonForce(this.page, `Publish ${string}, right now`)
 
-  if(!finalPublishButtonElement){
-    throw new Error(`Couldn't find the final publish button`);
-  }
+  finalPublishButton.click();
 
-  finalPublishButtonElement.click();
+  await this.page.waitForTimeout(2000);
+
+  await this.page.keyboard.press('Escape');
 }); 
 
 When('I {string} the {string}', async function (this: KrakenWorld, action: string, scope: string) {

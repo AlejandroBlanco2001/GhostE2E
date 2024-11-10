@@ -16,7 +16,7 @@ export const Urls = {
     "post/list": `${URL}/ghost/#/posts`,
     "tag/new": `${URL}/ghost/#/tags/new`,
     "post/new": `${URL}/ghost/#/editor/post`,
-    pageNew: `${URL}/ghost/#/editor/page`,
+    pageNew: `${URL}/ghost/#/editor/pages`,
 }
 
 export const DEFAULT_POST_NAME = "Coming soon"
