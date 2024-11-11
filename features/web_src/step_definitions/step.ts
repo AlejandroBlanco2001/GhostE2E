@@ -216,6 +216,12 @@ const Navigators: Record<string, Function> = {
     } else {
       await page.goto(Urls.dashboard, { waitUntil: 'networkidle0' });
     }
+  },
+  "create tag": async (page: Page) => {
+    await page.goto(Urls["tag/new"], { waitUntil: 'networkidle0' });
+  },
+  "internal tags": async (page: Page) => {
+    await page.goto(Urls["tag/internal-list"], { waitUntil: 'networkidle0' });
   }
 } as const
 
@@ -503,3 +509,47 @@ Then('I should find a {string} element with {string} text', async function (this
   }
 
 })
+
+When('I enter tag name {string}', async function (this: KrakenWorld, name: string) {
+  await FillElement(this.page, 'input[name="name"]', name, true);
+});
+
+When('I save the tag', async function (this: KrakenWorld) {
+  await ClickElement(this.page, '[data-test-button="save"]');
+});
+
+When('I enter tag {string} with {int} characters', async function (this: KrakenWorld, field: string, numberOfCharacters: number) {
+  if (field === 'slug') {
+    let slug = 'a'.repeat(numberOfCharacters);
+    await FillElement(this.page, 'input[name="slug"]', slug, true);
+  }
+  if (field === 'description') {
+    let desc = 'a'.repeat(numberOfCharacters);
+    await FillElement(this.page, 'textarea[name="description"]', desc, true);
+  }
+});
+
+Then('I should see tag saving {string}', async function (this: KrakenWorld, status: string) {
+  if (status.includes('success')) {
+    let saveButton = await getElement(this.page, '[data-test-button="save"]');
+    let text = await saveButton.evaluate(element => element.textContent);
+    if (!text?.includes('Saved')) {
+      throw new Error(`Element ${saveButton} text content is null`);
+    }
+  }
+  if (status === 'error') {
+    let saveButton = await getElement(this.page, '[data-test-button="save"]');
+    let text = await saveButton.evaluate(element => element.textContent);
+    if (!text?.includes('Retry')) {
+      throw new Error(`Element ${saveButton} text content is null`);
+    }
+  }
+});
+
+Then('I should see the tag {string} saved', async function (this: KrakenWorld, internalTagName: string) {
+  const internalTag = await getElement(this.page,`[href="#/tags/hash-${internalTagName}/"]`);
+  if (internalTag === null) throw new Error(`Couldn't find element with selector ${internalTag}`);
+  if ((await internalTag === null)) {
+    throw new Error(`Element ${internalTag} is null`);
+  }
+});

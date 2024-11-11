@@ -7,7 +7,7 @@ import { TagPage } from "../page/TagPage";
 /*
     Test Case: EP019 - Verify tag should have a name
 */
-test("EP019 - Verify update @Tag", async ({ page }) => {
+test("EP019 - Verify @Tag should have a name", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
     
