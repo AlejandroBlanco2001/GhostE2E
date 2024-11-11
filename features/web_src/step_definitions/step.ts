@@ -67,6 +67,7 @@ const Selectors: SelectorsCollection = {
   "post/action/final publish": "//button[@data-test-button='confirm-publish']",
   ///////////////////////////////////PAGES///////////////////////////////////
   "page/list/new": 'a[href="#/editor/page/"]',
+  "pages/new page": "//a//span[text()='New page']",
 } as const
 
 function GetSelector(selector: string): string {
@@ -412,6 +413,18 @@ When('I delete the {string}', async function (this: KrakenWorld, scope: string) 
   }
 });
 
+When('I create a new page called {string}', async function (this: KrakenWorld, name: string) {
+    
+  await ClickElement(this.page, GetSelector("pages/new page"));
+  await FillElement(this.page, "//textarea[@placeholder='Page title']",name,true,true);
+  await FillElement(this.page, "//div[@class='kg-prose']", faker.lorem.paragraph(2),true,true);
+  await ClickElement(this.page, "//button//span[text()='Publish']");
+  await ClickElement(this.page, "//div[@class='gh-publish-cta']");
+  await ClickElement(this.page, "//button[@data-test-button='confirm-publish']");
+  await ClickElement(this.page, "//button[@class='close']");
+
+});
+
 Then('I should see the {string} in the current page', async function (this: KrakenWorld, string: string) {
   const innerText = await this.page.evaluate(() => document.body.innerText);
 
@@ -458,4 +471,15 @@ Then('I should see member saving failed', async function (this: KrakenWorld,) {
   let selector = GetSelector("member/see/save-retry");
   let element = await getElement(this.page, selector);
   if (element === null) throw new Error(`Couldn't find element with selector ${selector}`);
+})
+
+Then('page {string} should exists', async function (this: KrakenWorld, name: string) {
+    
+  let url = Urls.main + "/" + name + "/";
+  let response = await this.page.goto(url, { waitUntil: 'networkidle0' });
+
+  if (!response.ok()) {
+      throw new Error(`La página ${url} no existe. Estado: ${response.status()}`);
+  }
+
 })
