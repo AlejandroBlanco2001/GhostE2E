@@ -8,4 +8,4 @@ Scenario: As user I login and create a valid internal tag.
     When I enter tag name "#internal tag"
     And I save the tag
     And I navigate to the "internal tags" functionality
-    Then I should see the tag "internaltag" saved
+    Then I should see the tag "internal-tag" saved
