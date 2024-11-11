@@ -1,4 +1,4 @@
-Feature: Create tag with invalid slug EP021
+Feature: Create tag with invalid slug EP019
 
 @user1 @web
 Scenario: As user I login and create a tag with invalid slug.

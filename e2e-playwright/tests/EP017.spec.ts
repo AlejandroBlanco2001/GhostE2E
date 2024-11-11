@@ -1,37 +1,26 @@
-import { test, expect } from "@playwright/test";
-import { takeScreenshot } from "../util/util";
+import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
-import { PagesEditor } from "../page/PagesEditor";
-import { Urls, URL } from "../../shared/config";
+import { takeScreenshot } from "../util/util";
+import { TagPage } from "../page/TagPage";
 
 
-test("EP017 Unpublish Page", async ({ page }) => {
+/*
+    Test Case: EP017 - Verify tag should have a name
+*/
+test("EP017 - Verify @Tag should have a name", async ({ page }) => {
     const loginPage = new LoginPage(page);
-    const pagesEditor = new PagesEditor(page);
-
-    // Chek if user is logged in
+    const tagPage = new TagPage(page);
+    
+    // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
-
-    // Navigate to Pages Editor and Create a new Page
-    await pagesEditor.open();
-    let newPageName = "Pagina retornar borrador";
-    await pagesEditor.createTestPage(newPageName);
-
-    // Open the new Page in editor mode
-    await pagesEditor.open();
-    await pagesEditor.editPage(newPageName);
-
-    // Unpublish
-    await page.click("text='Unpublish'");
-    await page.click(".gh-revert-to-draft");
-    await page.waitForTimeout(1000);
-
-
-    //Verify if the page is identified as draft
-    await pagesEditor.open();
-    await page.waitForTimeout(1000);
-    let pageStatus = await pagesEditor.getPageStatus(newPageName);
-    expect(pageStatus).toEqual("Draft");
+    // And Navigate to the tag page
+    await tagPage.open();
+    // When I save the tag without filling the name
+    await tagPage.saveTag();
     await takeScreenshot(page);
+    const error = await tagPage.getSaveFailure();
+    // Then It should show an error
+    expect(await error.isVisible()).toBeTruthy();
+    expect(await error.innerText()).toBe('Retry');
 });

@@ -1,4 +1,4 @@
-Feature: Create valid internal tag EP022
+Feature: Create valid internal tag EP020
 
 @user1 @web
 Scenario: As user I login and create a valid internal tag.

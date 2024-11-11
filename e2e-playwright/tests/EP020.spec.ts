@@ -5,25 +5,36 @@ import { takeScreenshot } from "../util/util";
 
 
 /*
-    Test Case: EP020 - Tag description should be less than 500 characters
+    Test Case: EP020 - Verify internal tag should be created
 */
-test("EP020 - Verify tag description limit", async ({ page }) => {
+test("EP020 - Verify internal tag creation", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
 
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
-    // And Navigate to create tag page
+    // And Navigate to the create tag page
     await tagPage.open();
-
-    // When: I fill the tag description with more than 500 characters
-    await tagPage.fillTagDescription('a'.repeat(501));
+    // When I fill the tag name
+    await tagPage.fillTagName('#Internal Tag');
     // And I save the tag
+    async function getSaveTagResponse() {
+        const responsePromise = await page.waitForResponse(async (response) => {
+            if (!response.url().includes('tags')) return false;
+            return response.status() === 201 || response.status() === 200;
+        });
+        return responsePromise.json();
+    }
     await tagPage.saveTag();
+    const response = await getSaveTagResponse();
+    // And I navigate to the internal tags page
+    await tagPage.openInternalTags();
+    // Then It should show the internal tag
     await takeScreenshot(page);
-    // Then It should show an error
-    const error = await tagPage.getSaveFailure();
-    expect(await error.isVisible()).toBeTruthy();
-    expect(await error.innerText()).toBe('Retry');
+    const internalTag = await tagPage.getInternalTagsList();
+
+    for (const li of await internalTag.all()){
+        expect(await li.isVisible()).toBeTruthy();
+    }
 });
