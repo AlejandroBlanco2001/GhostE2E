@@ -1,0 +1,11 @@
+Feature: Create tag with invalid description EP020
+
+  @user1 @web
+  Scenario: As user I login and create a tag with invalid description.
+      Given I login
+      And I navigate to the "create tag" functionality
+      And I wait for 2 seconds
+      When I enter tag name "Tag name"
+      And I enter tag "description" with 501 characters
+      And I save the tag
+      Then I should see tag saving "error"
