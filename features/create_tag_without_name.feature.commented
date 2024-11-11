@@ -1,4 +1,4 @@
-Feature: Crear tag with invalid name EP019
+Feature: Crear tag with invalid name EP017
 
 @user1 @web
 Scenario: As user I login and create a tag without name.

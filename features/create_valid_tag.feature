@@ -1,4 +1,4 @@
-Feature: Crear tag válido EP018
+Feature: Crear tag válido EP016
 
 @user1 @web
 Scenario: As user I login and create a tag with valid name.
