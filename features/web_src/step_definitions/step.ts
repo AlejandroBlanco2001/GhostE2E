@@ -483,3 +483,23 @@ Then('page {string} should exists', async function (this: KrakenWorld, name: str
   }
 
 })
+
+Then('I should find a {string} element with {string} text', async function (this: KrakenWorld, element: string, text: string) {
+  
+  let elemSelected = "";
+
+  if(element=="title"){
+    elemSelected = "h3";
+  }
+
+  let selector = "//"  + elemSelected + "[text()='" + text + "']";
+
+  let elementExists = await this.page.waitForXPath(selector, { timeout: 1000 })
+  .then(() => true)
+  .catch(() => false);
+
+  if(!elementExists){
+    throw new Error("El elemento descrito no se encuentra en la página");
+  }
+
+})
