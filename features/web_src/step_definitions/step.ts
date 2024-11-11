@@ -427,7 +427,18 @@ When('I create a new page called {string}', async function (this: KrakenWorld, n
   await ClickElement(this.page, "//button//span[text()='Publish']");
   await ClickElement(this.page, "//div[@class='gh-publish-cta']");
   await ClickElement(this.page, "//button[@data-test-button='confirm-publish']");
+  await this.page.waitForTimeout(1000);
   await ClickElement(this.page, "//button[@class='close']");
+  
+
+});
+
+When('I open {string} page to edit', async function (this: KrakenWorld, name: string) {
+  
+  await this.page.waitForTimeout(500);
+  let selector = "//h3[text()='" + name + "']";
+  await ClickElement(this.page, selector);
+  await this.page.waitForTimeout(1000);
 
 });
 
@@ -493,19 +504,23 @@ Then('page {string} should exists', async function (this: KrakenWorld, name: str
 Then('I should find a {string} element with {string} text', async function (this: KrakenWorld, element: string, text: string) {
   
   let elemSelected = "";
+  let selector = ""
 
   if(element=="title"){
     elemSelected = "h3";
-  }
-
-  let selector = "//"  + elemSelected + "[text()='" + text + "']";
+    selector = "//"  + elemSelected + "[text()='" + text + "']";
+  } else if (element=="button") 
+  {
+    elemSelected = "button";
+    selector = "//button//span[text()='" + text + "']"; 
+  };
 
   let elementExists = await this.page.waitForXPath(selector, { timeout: 1000 })
   .then(() => true)
   .catch(() => false);
 
   if(!elementExists){
-    throw new Error("El elemento descrito no se encuentra en la página");
+    throw new Error(`El elemento descrito con selector: ${selector}no se encuentra en la página`);
   }
 
 })
