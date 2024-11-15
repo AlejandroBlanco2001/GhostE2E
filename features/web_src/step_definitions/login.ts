@@ -23,20 +23,12 @@ async function firstLogin(page: Page) {
   // Skip onboarding
   const skipOnboarding = await page.$('#ob-skip');
 
-  if(skipOnboarding) {
+  if (skipOnboarding) {
     await skipOnboarding.click();
   }
 }
 
 async function normalLogin(page: Page) {
-  // let element;
-  // element = await page.$('input[type="email"]');
-  // await element?.type(SiteConfig.email);
-  // element = await page.$('input[type="password"]');
-  // await element?.type(SiteConfig.password);
-  // element = await page.$('button[type="submit"]');
-  // return element?.click();
-
   await page.waitForSelector('input[type="email"]');
   await page.type('input[type="email"]', SiteConfig.email);
   await page.type('input[type="password"]', SiteConfig.password);
@@ -46,7 +38,7 @@ async function normalLogin(page: Page) {
   // Skip onboarding
   const skipOnboarding = await page.$('#ob-skip');
 
-  if(skipOnboarding) {
+  if (skipOnboarding) {
     await skipOnboarding.click();
   }
 }
@@ -58,11 +50,19 @@ export async function Login(page: Page) {
   let watchdog = [
     page.waitForSelector("#" + loginId),
     page.waitForSelector("#" + SetupId),
+    page.waitForSelector("section > a[href='#/setup/two/']")
   ]
   let relement = await Promise.race(watchdog)
   let idProp = await relement!.getProperty('id')
   let id = await idProp.jsonValue()
-  if (id === SetupId) {
+  let oldSetup = page.url().includes('one')
+  if (oldSetup) {
+    let n = page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await relement?.click();
+    await n;
+    return firstLogin(page);
+  } else if (id === SetupId) {
+    await page.goto(Urls.signin, { waitUntil: 'networkidle0' });
     return firstLogin(page);
   } else if (id === loginId) {
     return normalLogin(page);

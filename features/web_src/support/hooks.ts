@@ -4,7 +4,8 @@ import { ITestCaseHookParameter } from '@cucumber/cucumber/lib/support_code_libr
 import { WebClient } from './WebClient'
 import type { Page } from 'puppeteer-core/lib/cjs/puppeteer/common/Page';
 import { startGhost } from '../../../shared/runner';
-import { CI } from "../../../shared/config";
+import { CI, VISUAL_REGRESSION_TESTING } from "../../../shared/config";
+import { saveScenarioReportInfo } from "./utils";
 
 Before(async function (this: KrakenWorld) {
   await startGhost();
@@ -26,11 +27,14 @@ Before(async function (this: KrakenWorld) {
 })
 
 AfterStep(async function (this: KrakenWorld, { gherkinDocument }: ITestCaseHookParameter) {
-  if (CI) {
+  if (VISUAL_REGRESSION_TESTING && CI) {
     // Wait for the page to be ready
     await this.page.waitForTimeout(1000);
   }
 })
 After(async function (this: KrakenWorld, params: ITestCaseHookParameter) {
+  if (VISUAL_REGRESSION_TESTING && params.result?.status === 1) {
+    saveScenarioReportInfo(this.scenario)
+  }
   await this.deviceClient.stopKrakenForUserId(this.userId);
 });
