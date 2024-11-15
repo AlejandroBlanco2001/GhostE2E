@@ -7,6 +7,7 @@ const createUrl = Urls.membersCreate;
 
 export class MembersPage {
     readonly page: Page;
+    readonly testInfo: TestInfo;
     readonly newMember: Locator;
     readonly name: Locator;
     readonly email: Locator;
@@ -16,8 +17,9 @@ export class MembersPage {
     readonly retry: Locator;
     readonly invalidEmail: Locator;
 
-    constructor(page: Page) {
+    constructor(page: Page, testInfo: TestInfo = { title: '__ignore__' } as TestInfo) {
         this.page = page;
+        this.testInfo = testInfo;
         this.newMember = page.locator('a:has-text("New Member")');
         this.name = page.locator('input[id="member-name"]');
         this.email = page.locator('input[id="member-email"]');
@@ -36,7 +38,7 @@ export class MembersPage {
 
     async openMember(email: string) {
         await this.open()
-        await takeScreenshot(this.page);
+        // await takeScreenshot(this.page);
         await this.containsEmail(email).click();
     }
 
@@ -50,16 +52,16 @@ export class MembersPage {
 
     async createMember(name: string, email: string, notes: string) {
         await this.open();
-        await takeScreenshot(this.page);
+        await takeScreenshot(this.page, this.testInfo, 'Members Page');
         await this.newMember.click();
 
         await this.name.fill(name);
         await this.email.fill(email);
         await this.notes.fill(notes);
+        await takeScreenshot(this.page, this.testInfo, 'Create Member');
 
         await this.save.click();
         await this.page.waitForLoadState('networkidle');
-        await takeScreenshot(this.page);
     }
 
     async editMember(email: string, name: string, newEmail: string, notes: string) {
@@ -68,10 +70,10 @@ export class MembersPage {
         await this.name.fill(name);
         await this.email.fill(newEmail);
         await this.notes.fill(notes);
+        await takeScreenshot(this.page, this.testInfo, 'Edit Member');
 
         await this.save.click();
         await this.page.waitForLoadState('networkidle');
-        await takeScreenshot(this.page);
     }
 
     async creationStatus(): Promise<boolean> {

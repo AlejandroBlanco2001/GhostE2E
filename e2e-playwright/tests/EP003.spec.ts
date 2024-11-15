@@ -7,7 +7,7 @@ import { faker } from "@faker-js/faker";
 
 test("EP003 Given no members exist, When I create a member, Then the dashboard should show 1 member", async ({
     page,
-}) => {
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const membersPage = new MembersPage(page);
@@ -19,7 +19,6 @@ test("EP003 Given no members exist, When I create a member, Then the dashboard s
 
     // Navigate to the dashboard and verify it shows 0 members initially
     await dashboardPage.open();
-    await takeScreenshot(page);
 
     const dashboard = await dashboardPage.getDashboard();
     await expect(dashboard).toBeVisible({ timeout: 5000 });
@@ -37,7 +36,6 @@ test("EP003 Given no members exist, When I create a member, Then the dashboard s
 
     // Then: Navigate to the dashboard and verify it shows 1 member
     await dashboardPage.open();
-    await takeScreenshot(page);
 
     const updatedDashboard = await dashboardPage.getDashboard();
     await expect(updatedDashboard).toBeVisible({ timeout: 5000 });

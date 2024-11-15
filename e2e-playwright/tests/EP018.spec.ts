@@ -7,7 +7,9 @@ import { takeScreenshot } from "../util/util";
 /*
     Test Case: EP018 - Tag description should be less than 500 characters
 */
-test("EP018 - Verify tag description limit", async ({ page }) => {
+test("EP018 - Verify tag description limit", async ({
+    page
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
 
@@ -21,7 +23,6 @@ test("EP018 - Verify tag description limit", async ({ page }) => {
     await tagPage.fillTagDescription('a'.repeat(501));
     // And I save the tag
     await tagPage.saveTag();
-    await takeScreenshot(page);
     // Then It should show an error
     const error = await tagPage.getSaveFailure();
     expect(await error.isVisible()).toBeTruthy();

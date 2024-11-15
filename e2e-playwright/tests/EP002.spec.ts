@@ -7,7 +7,7 @@ import { PageListPage } from "../page/PageListPage";
 
 test("EP002 Given the no page created, When I create 2 pages, Then the page list should be sorted by creation time", async ({
     page,
-}) => {
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const createPagePage = new CreatePagePage(page);
     const pageListPage = new PageListPage(page);
@@ -19,7 +19,6 @@ test("EP002 Given the no page created, When I create 2 pages, Then the page list
 
     // And Navigate to the page 
     await createPagePage.open();
-    await takeScreenshot(page);
 
     // When: I create a Page
     let firstPostTitle = faker.lorem.sentence();
@@ -34,7 +33,6 @@ test("EP002 Given the no page created, When I create 2 pages, Then the page list
     await createPagePage.publishPost();
 
     await pageListPage.open();
-    await takeScreenshot(page);
 
     expect(await page.innerText("body")).toContain(fakeValues.name);
 

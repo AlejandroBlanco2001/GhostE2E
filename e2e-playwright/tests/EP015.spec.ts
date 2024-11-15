@@ -5,7 +5,9 @@ import { PagesEditor } from "../page/PagesEditor";
 import { URL } from "../../shared/config";
 
 
-test("EP015 Check new page is visible in edition mode", async ({ page }) => {
+test("EP015 Check new page is visible in edition mode", async ({
+    page
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const pagesEditor = new PagesEditor(page);
 
@@ -17,16 +19,14 @@ test("EP015 Check new page is visible in edition mode", async ({ page }) => {
     await pagesEditor.open();
     let newPageName = "Prueba modo edicion";
     await pagesEditor.createTestPage(newPageName);
+    await takeScreenshot(page, testInfo, "Page Created");
 
     // Select edit option for the new Page
     await pagesEditor.editPage(newPageName);
 
 
     // Verify if new page opens in edit mode
-    await takeScreenshot(page);
     let activeUrl = await page.url();
     let expectedUrl = `${URL}/ghost/#/editor/page/`;
     expect(activeUrl).toContain(expectedUrl);
-
-
 });

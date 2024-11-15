@@ -7,7 +7,7 @@ import { PageListPage } from "../page/PageListPage";
 
 test("EP001 Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
     page,
-}) => {
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const createPagePage = new CreatePagePage(page);
     const pageListPage = new PageListPage(page);
@@ -19,20 +19,18 @@ test("EP001 Given no page created, When I create a page, Then the page list shou
 
     // And Navigate to the page 
     await createPagePage.open();
-    await takeScreenshot(page);
-    
+
     // When: I create a Page
     const fakeValues = {
         name: faker.lorem.sentence(),
         paragraph: faker.lorem.paragraph(),
     }
-    
+
     await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
     await createPagePage.publishPost();
 
     // Then: Navigate to the ListPage page and verify it shows 1 page
     await pageListPage.open();
-    await takeScreenshot(page);
 
     expect(await page.innerText("body")).toContain(fakeValues.name);
 });

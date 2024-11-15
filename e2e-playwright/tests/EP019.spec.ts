@@ -7,10 +7,12 @@ import { takeScreenshot } from "../util/util";
 /*
     Test Case: EP019 - Verify tag slug should be less than 191 characters
 */
-test("EP019 - Verify tag slug limit", async ({ page }) => {
+test("EP019 - Verify tag slug limit", async ({
+    page
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
-    
+
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
@@ -20,7 +22,6 @@ test("EP019 - Verify tag slug limit", async ({ page }) => {
     await tagPage.fillTagSlug('a'.repeat(192));
     // And I save the tag
     await tagPage.saveTag();
-    await takeScreenshot(page);
     // Then It should show an error
     const error = await tagPage.getSaveFailure();
     expect(await error.isVisible()).toBeTruthy();

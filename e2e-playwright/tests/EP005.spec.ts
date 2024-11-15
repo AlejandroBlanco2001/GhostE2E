@@ -7,7 +7,7 @@ import { faker } from "@faker-js/faker";
 
 test("EP005 Given the dashboard is accessed, When I create a member, Then the activity log should contain a 'Created manually' action", async ({
     page,
-}) => {
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const membersPage = new MembersPage(page);
@@ -18,7 +18,6 @@ test("EP005 Given the dashboard is accessed, When I create a member, Then the ac
 
     // Navigate to members page and take a screenshot
     await membersPage.open();
-    await takeScreenshot(page);
 
     // When: I create a member
     const fakeValues = {
@@ -30,7 +29,6 @@ test("EP005 Given the dashboard is accessed, When I create a member, Then the ac
 
     // Then: Navigate back to the dashboard and verify the activity log contains "Created manually"
     await dashboardPage.open();
-    await takeScreenshot(page);
 
     const bodyText = await page.innerText("body");
     expect(bodyText).toContain("Created manually");

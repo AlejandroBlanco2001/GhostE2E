@@ -7,7 +7,9 @@ import { takeScreenshot } from "../util/util";
 /*
     Test Case: EP020 - Verify internal tag should be created
 */
-test("EP020 - Verify internal tag creation", async ({ page }) => {
+test("EP020 - Verify internal tag creation", async ({
+    page
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
 
@@ -31,10 +33,9 @@ test("EP020 - Verify internal tag creation", async ({ page }) => {
     // And I navigate to the internal tags page
     await tagPage.openInternalTags();
     // Then It should show the internal tag
-    await takeScreenshot(page);
     const internalTag = await tagPage.getInternalTagsList();
 
-    for (const li of await internalTag.all()){
+    for (const li of await internalTag.all()) {
         expect(await li.isVisible()).toBeTruthy();
     }
 });

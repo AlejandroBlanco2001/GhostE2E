@@ -1,14 +1,19 @@
 import { test, expect } from "@playwright/test";
-import { takeScreenshot } from "../util/util";
+import { takeScreenshot, VRTBeforeAll } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
+import { VISUAL_REGRESSION_TESTING } from "../../shared/config";
 
+// test.beforeAll(VRTBeforeAll);
+if (VISUAL_REGRESSION_TESTING) {
+    faker.seed(3);
+}
 test("EP008 Create member without name", async ({
     page,
-}) => {
-    const loginPage = new LoginPage(page);
-    const membersPage = new MembersPage(page);
+}, testInfo) => {
+    const loginPage = new LoginPage(page, testInfo);
+    const membersPage = new MembersPage(page, testInfo);
 
     // Given: I have logged
     await loginPage.open();
@@ -21,6 +26,7 @@ test("EP008 Create member without name", async ({
     }
     // When: I create a memeber with no name
     await membersPage.createMember('', fakeValues.email, fakeValues.notes);
+    await takeScreenshot(page, testInfo, 'Member Created');
 
     // Then: The member is created successfully
     await membersPage.open();

@@ -8,7 +8,9 @@ import { takeScreenshot } from "../util/util";
 /*
     Test Case: EP016 - Verify create new Tag
 */
-test("EP016 - Verify create new @Tag", async ({ page }) => {
+test("EP016 - Verify create new @Tag", async ({
+    page
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
 
@@ -31,7 +33,6 @@ test("EP016 - Verify create new @Tag", async ({ page }) => {
     // And I save the tag
     await tagPage.saveTag();
     const response = await getSaveTagResponse();
-    await takeScreenshot(page);
     // Then It should create the tag and return the name
     expect(response.tags[0].name).toBe('Test Tag');
 });

@@ -1,14 +1,19 @@
 import { test, expect } from "@playwright/test";
-import { takeScreenshot } from "../util/util";
+import { takeScreenshot, VRTBeforeAll } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
+import { VISUAL_REGRESSION_TESTING } from "../../shared/config";
 
+// test.beforeAll(VRTBeforeAll);
+if (VISUAL_REGRESSION_TESTING) {
+    faker.seed(6);
+}
 test("EP011 Edit member with duplicate email", async ({
     page,
-}) => {
-    const loginPage = new LoginPage(page);
-    const membersPage = new MembersPage(page);
+}, testInfo) => {
+    const loginPage = new LoginPage(page, testInfo);
+    const membersPage = new MembersPage(page, testInfo);
 
     // Given: I have logged in and created a member
     await loginPage.open();
@@ -24,7 +29,9 @@ test("EP011 Edit member with duplicate email", async ({
         notes2: faker.lorem.sentence(),
     }
     await membersPage.createMember(fakeValues.name1, fakeValues.email1, fakeValues.notes1);
+    await takeScreenshot(page, testInfo, 'Member Created');
     await membersPage.createMember(fakeValues.name2, fakeValues.email2, fakeValues.notes2);
+    await takeScreenshot(page, testInfo, 'Member Created');
 
     await membersPage.open();
 
@@ -36,6 +43,7 @@ test("EP011 Edit member with duplicate email", async ({
 
     // When: I edit the second member with the email of the first member
     await membersPage.editMember(fakeValues.email2, fakeValues.name2, fakeValues.email1, fakeValues.notes2);
+    await takeScreenshot(page, testInfo, 'Member Edited Fail');
 
     // Then: The member is not updated
     expect(await membersPage.creationStatus()).toBeFalsy();

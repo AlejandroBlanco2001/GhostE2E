@@ -26,9 +26,9 @@ export class CreatePostPage {
         await postTitle.press('Enter');
 
         await this.page.keyboard.type(faker.lorem.paragraph());
-                
+
         // Take a screenshot after filling the form
-        await takeScreenshot(this.page);
+        // await takeScreenshot(this.page);
 
         return postName
     }
@@ -47,7 +47,7 @@ export class CreatePostPage {
 
     async getPublishButton(): Promise<Locator> {
         // get all tags buttons
-        const buttons = await this.page.getByRole("button").all(); 
+        const buttons = await this.page.getByRole("button").all();
         for (const button of buttons) {
             if (await button.getAttribute("data-test-button") === "publish-flow") {
                 return button;
@@ -69,19 +69,19 @@ export class CreatePostPage {
         const publishButton = await this.getPublishButton();
         await expect(publishButton).toBeVisible({ timeout: 5000 });
         await publishButton.click();
-        
+
         const continueButton = await this.continuePublishButton();
         await expect(continueButton).toBeVisible({ timeout: 5000 });
         await continueButton.click();
-        
+
         const finalPublishButton = await this.publishRightNowButton();
         await expect(finalPublishButton).toBeVisible({ timeout: 5000 });
-    
+
         // Alternative direct click with JavaScript if regular click fails
         await finalPublishButton.evaluate((el: any) => el.click());
 
         await this.page.waitForTimeout(2000)
 
         await this.page.keyboard.press('Escape')
-    }        
+    }
 }

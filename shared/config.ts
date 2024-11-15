@@ -1,5 +1,6 @@
 export const VERSION = process.env.GHOST_VERSION || '5.96.0';
-export const PORT = parseInt(process.env.GHOST_PORT || '9333')
+export const PORT = parseInt(process.env.GHOST_PORT || '9333');
+export const VISUAL_REGRESSION_TESTING = Boolean(process.env.GHOST_VRT || false);
 export const CI = Boolean(process.env.CI || false);
 export const URL = (process.env.GHOST_URL || 'http://localhost:' + PORT.toString()).replace(/\/$/, '');
 export const IMAGE = `ghost:${VERSION}`;

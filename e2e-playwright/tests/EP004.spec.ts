@@ -7,7 +7,7 @@ import { CreatePostPage } from "../page/CreatePostPage";
 
 test("EP004 Given no post exists, When I create a new post, Then the post table should show 1 result", async ({
     page,
-}) => {
+}, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const createPostPage = new CreatePostPage(page);
@@ -23,7 +23,6 @@ test("EP004 Given no post exists, When I create a new post, Then the post table 
 
     // Then: Navigate to the dashboard and verify the post table shows 2 posts
     await dashboardPage.open();
-    await takeScreenshot(page);
 
     const updatedPostTable = await dashboardPage.getPostTable();
     await expect(updatedPostTable).toBeVisible({ timeout: 5000 });
