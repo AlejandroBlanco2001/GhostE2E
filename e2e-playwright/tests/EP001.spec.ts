@@ -1,36 +1,40 @@
 import { test, expect } from "@playwright/test";
-import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { faker } from "@faker-js/faker";
 import { CreatePagePage } from "../page/CreatePagePage";
 import { PageListPage } from "../page/PageListPage";
 
 test("EP001 Given no page created, When I create a page, Then the page list should be updated with the new Page", async ({
-    page,
+  page,
 }, testInfo) => {
-    const loginPage = new LoginPage(page);
-    const createPagePage = new CreatePagePage(page);
-    const pageListPage = new PageListPage(page);
+  const loginPage = new LoginPage(page);
+  const createPagePage = new CreatePagePage(page);
+  const pageListPage = new PageListPage(page);
 
-    // Given: No members exist, and the user is logged in
-    await loginPage.open();
-    await loginPage.login();
-    expect(await loginPage.userIsLoggedIn()).toBeTruthy();
+  // Given: No members exist, and the user is logged in
+  await loginPage.open();
+  await loginPage.login();
 
-    // And Navigate to the page 
-    await createPagePage.open();
+  expect(await loginPage.userIsLoggedIn()).toBeTruthy();
 
-    // When: I create a Page
-    const fakeValues = {
-        name: faker.lorem.sentence(),
-        paragraph: faker.lorem.paragraph(),
-    }
+  // And Navigate to the page
+  await createPagePage.open();
 
-    await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
-    await createPagePage.publishPost();
+  // When: I create a Page
+  const fakeValues = {
+    name: faker.lorem.sentence(),
+    paragraph: faker.lorem.paragraph(),
+  };
 
-    // Then: Navigate to the ListPage page and verify it shows 1 page
-    await pageListPage.open();
+  await createPagePage.fillForm(fakeValues.name, fakeValues.paragraph);
+  await createPagePage.publishPost();
 
-    expect(await page.innerText("body")).toContain(fakeValues.name);
+  // Then: Navigate to the ListPage page and verify it shows 1 page
+  await pageListPage.open();
+
+  await page.waitForTimeout(2000);
+
+  const pageBody = await page.innerText("body");
+
+  expect(pageBody).toContain(fakeValues.name);
 });
