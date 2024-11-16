@@ -8,6 +8,7 @@ export function runKraken() {
   let files = fs
     .readdirSync(featuresDir)
     .filter((f) => f.endsWith(".feature") || f.endsWith(".commented"));
+
   files = files.map((f) => f.replace(".commented", "")).sort();
 
   console.log("-".repeat(80));
@@ -31,15 +32,16 @@ export function runKraken() {
       continue;
     }
 
+    if(file.startsWith("Version") && VERSION !== "5.96.0"){
+      console.log(`Skipping ${file} as it is not compatible with the current version`);
+      currentFileIndex++;
+      continue;
+    }
+
     console.log("-".repeat(80));
     console.log(`Running Kraken test for: ${file}`);
     console.log(`Files remaining: ${files.slice(currentFileIndex + 1)}`);
     console.log("-".repeat(80));
-
-    if (file.includes("Version -") && VERSION !== "5.96.0") {
-      console.log("Skipping Version - feature file");
-      currentFileIndex++;
-    }
 
     // Leave only the current file
     leaveOnlyOneFile(featuresDir, file);
@@ -48,6 +50,7 @@ export function runKraken() {
     const compileRes = spawnSync("npm", ["run", "kraken-compile"], {
       stdio: "inherit",
     });
+
     if (compileRes.status !== 0) {
       console.error("Kraken compilation failed");
       process.exit(1);
