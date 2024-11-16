@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test";
 import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { PagesEditor } from "../page/PagesEditor";
-import { URL } from "../../shared/config";
 
 
 test("EP014 Check new page is visible in Pages Editor", async ({
@@ -20,7 +19,7 @@ test("EP014 Check new page is visible in Pages Editor", async ({
     let newPageName = "Prueba Vista Editor"
     await pagesEditor.createTestPage(newPageName);
     await takeScreenshot(page, testInfo, "Page Created");
-
+    await pagesEditor.open();
     // Verify if the new page is visible on Editor
     const resultado = await pagesEditor.getCreatedPages();
     await takeScreenshot(page, testInfo, "Access Page Created");
