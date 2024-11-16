@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 const compareImages = require("resemblejs/compareImages");
+let counter = 1;
 
 export interface ScenarioInformation {
   name: string;
@@ -202,6 +203,11 @@ async function compareImagesWithResemblejs() {
 
     const id = element.id.replace(/ /g, "_");
 
+    htmlContent += `
+      <h1>Scenario ${counter++}: ${element.name}</h1>
+      <hr>
+    `;
+
     if (element?.steps) {
       for (let j = 0; j < element.steps.length; j++) {
         const oldSteps = element.steps[j];
@@ -230,6 +236,9 @@ async function compareImagesWithResemblejs() {
           saveBase64Image(oldBase64Data, fullOldPath);
           saveBase64Image(newBase64Data, fullNewPath);
 
+          // stepName
+          const stepName = oldSteps.name;
+
           try {
             const { mismatchPercentage, diffBuffer } =
               await compareAndGenerateDiff(
@@ -243,34 +252,34 @@ async function compareImagesWithResemblejs() {
 
             htmlContent += `
               <div class="section">
-                <h2>Comparison for Step ID: ${id}</h2>
+                <h2>Comparison for Step: ${stepName}</h2>
                 <div class="image-container">
                   <div>
                     <h3>Old Image</h3>
                     <img src="${path.join(
-                      "outputImages",
-                      "4.5",
-                      id,
-                      imageNameOld
-                    )}" alt="Old Image"/>
+              "outputImages",
+              "4.5",
+              id,
+              imageNameOld
+            )}" alt="Old Image"/>
                   </div>
                   <div>
                     <h3>New Image</h3>
                     <img src="${path.join(
-                      "outputImages",
-                      "5.96.0",
-                      id,
-                      imageNameNew
-                    )}" alt="New Image"/>
+              "outputImages",
+              "5.96.0",
+              id,
+              imageNameNew
+            )}" alt="New Image"/>
                   </div>
                   <div>
                     <h3>Diff Image</h3>
                     <img src="${path.join(
-                      "outputImages",
-                      "diffs",
-                      id,
-                      imageNameDiff
-                    )}" alt="Diff Image"/>
+              "outputImages",
+              "diffs",
+              id,
+              imageNameDiff
+            )}" alt="Diff Image"/>
                   </div>
                 </div>
                 <div class="details">
