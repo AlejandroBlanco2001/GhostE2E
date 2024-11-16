@@ -4,32 +4,44 @@ import { LoginPage } from "../page/LoginPage";
 import { DashboardPage } from "../page/DashboardPage";
 import { MembersPage } from "../page/MembersPage";
 import { faker } from "@faker-js/faker";
+import { VERSION } from "../../shared/config";
 
 test("EP005 Given the dashboard is accessed, When I create a member, Then the activity log should contain a 'Created manually' action", async ({
-    page,
+  page,
 }, testInfo) => {
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const membersPage = new MembersPage(page);
+  test.skip(
+    VERSION !== "5.96.0",
+    "The functionality was not available in this version"
+  );
 
-    // Given: User is logged in and the dashboard is accessed
-    await loginPage.open();
-    await loginPage.login();
+  const loginPage = new LoginPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const membersPage = new MembersPage(page);
 
-    // Navigate to members page and take a screenshot
-    await membersPage.open();
+  // Given: User is logged in and the dashboard is accessed
+  await loginPage.open();
+  await loginPage.login();
 
-    // When: I create a member
-    const fakeValues = {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        notes: faker.lorem.sentence(),
-    }
-    await membersPage.createMember(fakeValues.name, fakeValues.email, fakeValues.notes);
+  // Navigate to members page and take a screenshot
+  await membersPage.open();
 
-    // Then: Navigate back to the dashboard and verify the activity log contains "Created manually"
-    await dashboardPage.open();
+  // When: I create a member
+  const fakeValues = {
+    name: faker.person.firstName(),
+    email: faker.internet.email(),
+    notes: faker.lorem.sentence(),
+  };
+  await membersPage.createMember(
+    fakeValues.name,
+    fakeValues.email,
+    fakeValues.notes
+  );
 
-    const bodyText = await page.innerText("body");
-    expect(bodyText).toContain("Created manually");
+  // Then: Navigate back to the dashboard and verify the activity log contains "Created manually"
+  await dashboardPage.open();
+
+  await page.waitForTimeout(1000);
+
+  const bodyText = await page.innerText("body");
+  expect(bodyText).toContain("Created manually");
 });

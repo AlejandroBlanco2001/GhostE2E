@@ -3,31 +3,38 @@ import { takeScreenshot } from "../util/util";
 import { LoginPage } from "../page/LoginPage";
 import { DashboardPage } from "../page/DashboardPage";
 import { CreatePostPage } from "../page/CreatePostPage";
-
+import { VERSION } from "../../shared/config";
 
 test("EP004 Given no post exists, When I create a new post, Then the post table should show 1 result", async ({
-    page,
+  page,
 }, testInfo) => {
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const createPostPage = new CreatePostPage(page);
+  test.skip(
+    VERSION !== "5.96.0",
+    "The functionality was not available in this version"
+  );
 
-    // Given: User is logged in, and 1 post already exists
-    await loginPage.open();
-    await loginPage.login();
+  const loginPage = new LoginPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const createPostPage = new CreatePostPage(page);
 
-    // When: I create a new post
-    await createPostPage.open();
-    const postCreatedName = await createPostPage.fillForm();
-    await createPostPage.publishPost();
+  // Given: User is logged in, and 1 post already exists
+  await loginPage.open();
+  await loginPage.login();
 
-    // Then: Navigate to the dashboard and verify the post table shows 2 posts
-    await dashboardPage.open();
+  // When: I create a new post
+  await createPostPage.open();
+  const postCreatedName = await createPostPage.fillForm();
+  await createPostPage.publishPost();
 
-    const updatedPostTable = await dashboardPage.getPostTable();
-    await expect(updatedPostTable).toBeVisible({ timeout: 5000 });
+  // Then: Navigate to the dashboard and verify the post table shows 2 posts
+  await dashboardPage.open();
 
-    const dashboardPageInnerText = await page.innerText("body");
+  await page.waitForTimeout(1000);
 
-    expect(dashboardPageInnerText).toContain(postCreatedName);
+  const updatedPostTable = await dashboardPage.getPostTable();
+  await expect(updatedPostTable).toBeVisible({ timeout: 5000 });
+
+  const dashboardPageInnerText = await page.innerText("body");
+
+  expect(dashboardPageInnerText).toContain(postCreatedName);
 });
