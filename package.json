@@ -20,6 +20,8 @@
     "@faker-js/faker": "^9.2.0",
     "@playwright/test": "^1.48.2",
     "@types/node": "^22.9.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "@types/resemblejs": "^4.1.3",
     "kraken-node": "^1.0.24",
     "source-map-loader": "^3.0.1",
@@ -34,7 +36,11 @@
     "chokidar": "^3.5.3",
     "commander": "^9.2.0",
     "express": "^4.18.1",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^2.6.1",
     "nunjucks": "^3.2.3",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
     "resemblejs": "^4.1.0"
   }
 }
