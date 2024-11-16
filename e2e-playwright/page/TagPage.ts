@@ -1,12 +1,18 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { Urls } from "../../shared/config";
-
+import { VERSION } from "../../shared/config";
 
 export class TagPage{
     readonly page: Page;
 
+    // elements
+    readonly ButtonSave: Locator;
+    readonly ButtonSaveFailure: Locator;
+
     constructor(page: Page) {
         this.page = page;
+        this.ButtonSave = VERSION === "4.5" ? page.locator("span:has-text('Save')") : page.locator('[data-test-button="save"]');
+        this.ButtonSaveFailure = VERSION === "4.5" ? page.locator("span:has-text('Retry')") : page.locator('[data-test-button="save"]');
     }
 
     async open() {
@@ -23,11 +29,11 @@ export class TagPage{
     }
 
     async saveTag() {
-        await this.page.locator('[data-test-button="save"]').click();
+        await this.ButtonSave.click();
     }
 
     async getSaveFailure() {
-        return await this.page.locator('[data-test-task-button-state="failure"]');
+        return this.ButtonSaveFailure;
     }
 
     async fillTagDescription(description: string) {

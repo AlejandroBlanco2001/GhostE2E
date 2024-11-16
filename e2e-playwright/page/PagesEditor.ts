@@ -1,9 +1,8 @@
 import { Page, Locator, TestInfo } from "@playwright/test";
 import { Urls } from "../../shared/config";
 import { faker } from '@faker-js/faker';
-import { promises } from "fs";
-import { text } from "stream/consumers";
 import { takeScreenshot } from "../util/util";
+import { VERSION } from "../../shared/config";
 
 export class PagesEditor {
     readonly page: Page;
@@ -21,21 +20,24 @@ export class PagesEditor {
 
     async getCreatedPages(): Promise<string> {
 
-        let container = this.page.locator("h3");
-        let elementos = await container.count();
+        let container = await this.getPageElements();
         let CreatedPages = "{pages: ";
 
-        for (let i = 0; i < elementos; i++) {
-            let elemento = container.nth(i);
-            CreatedPages += await elemento.innerText();
-            if (i < elementos - 1) {
-                CreatedPages += ", "
-            }
+        for(const element of container) {
+            CreatedPages += await element.innerText();
+            CreatedPages += ", ";
         }
 
         CreatedPages += "}"
 
         return CreatedPages;
+    }
+
+    async getPageElements(): Promise<Locator[]> {
+        if (VERSION === "4.5") {
+            return await this.page.locator('h3.gh-content-entry-title').all();
+        }
+        return await this.page.locator('h3').all();
     }
 
     async createTestPage(name) {
@@ -73,22 +75,32 @@ export class PagesEditor {
 
     async editPage(name) {
 
-        let pages = await this.page.locator('h3');
-        let pagesCount = await pages.count();
-        let pagecontainer;
+        let pages = await this.getPageElements();
 
-        for (let i = 0; i < pagesCount; i++) {
-            let pageMenu = pages.nth(i);
-            if (await pageMenu.innerText() == name) {
-                pagecontainer = pageMenu.locator("..").locator("..");
+        for (const page of pages) {
+            if (await page.innerText() == name) {
+                await this.clickEditButton(page);
                 break;
             }
         }
 
-        let editButton = pagecontainer.locator("svg");
-        await editButton.click();
         await takeScreenshot(this.page, this.testInfo, "Edit Page");
     }
+
+    async clickEditButton(page: Locator): Promise<void> {
+        if (VERSION === "4.5") {
+            let button = this.page.locator('[href^="#/editor/page/"]');
+            await button.click();
+            return
+        }
+        if(VERSION === "5.96.0") {
+            let button = page.locator("..").locator("..");
+            await button.locator("svg").click();
+            return
+        }
+        return;
+    }
+
 
     async getPageStatus(name): Promise<string> {
 
