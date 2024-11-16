@@ -29,6 +29,8 @@ test("EP004 Given no post exists, When I create a new post, Then the post table 
   // Then: Navigate to the dashboard and verify the post table shows 2 posts
   await dashboardPage.open();
 
+  await page.waitForTimeout(1000);
+
   const updatedPostTable = await dashboardPage.getPostTable();
   await expect(updatedPostTable).toBeVisible({ timeout: 5000 });
 

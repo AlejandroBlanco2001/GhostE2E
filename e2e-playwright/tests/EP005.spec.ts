@@ -40,6 +40,8 @@ test("EP005 Given the dashboard is accessed, When I create a member, Then the ac
   // Then: Navigate back to the dashboard and verify the activity log contains "Created manually"
   await dashboardPage.open();
 
+  await page.waitForTimeout(1000);
+
   const bodyText = await page.innerText("body");
   expect(bodyText).toContain("Created manually");
 });

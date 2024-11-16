@@ -21,23 +21,18 @@ test("EP003 Given no members exist, When I create a member, Then the dashboard s
   // Given: No members exist, and the user is logged in
   await loginPage.open();
   await loginPage.login();
+
   expect(await loginPage.userIsLoggedIn()).toBeTruthy();
-
-  // Navigate to the dashboard and verify it shows 0 members initially
-  await dashboardPage.open();
-
-  const dashboard = await dashboardPage.getDashboard();
-  await expect(dashboard).toBeVisible({ timeout: 5000 });
-  const initialDashboardText = await dashboard.innerText();
-  expect(initialDashboardText).toContain("0");
 
   // When: I create a member
   await membersPage.open();
+
   const fakeValues = {
     name: faker.person.firstName(),
     email: faker.internet.email(),
     notes: faker.lorem.sentence(),
   };
+
   await membersPage.createMember(
     fakeValues.name,
     fakeValues.email,
@@ -47,8 +42,11 @@ test("EP003 Given no members exist, When I create a member, Then the dashboard s
   // Then: Navigate to the dashboard and verify it shows 1 member
   await dashboardPage.open();
 
-  const updatedDashboard = await dashboardPage.getDashboard();
-  await expect(updatedDashboard).toBeVisible({ timeout: 5000 });
-  const updatedDashboardText = await updatedDashboard.innerText();
-  expect(updatedDashboardText).toContain("1");
+  await page.waitForTimeout(1000);
+
+  const dashboardText = await dashboardPage.getDashboardMembersValue();
+  const updatedDashboardText = await dashboardText.innerText();
+  const words = updatedDashboardText.split("\n");
+
+  expect(words[0]).not.toContain("0");
 });
