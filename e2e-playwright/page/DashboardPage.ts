@@ -5,6 +5,7 @@ import { takeScreenshot } from "../util/util";
 export class DashboardPage {
   readonly page: Page;
   readonly testInfo: TestInfo;
+  onboardingClicked: boolean = false;
 
   constructor(
     page: Page,
@@ -16,6 +17,18 @@ export class DashboardPage {
 
   async open() {
     await this.page.goto(Urls.dashboard, { waitUntil: "networkidle" });
+
+    if (this.onboardingClicked) {
+      return;
+    }
+
+    // if there exists .gh-onboarding-skip, click it
+    const skipButton = await this.page.locator(".gh-onboarding-skip");
+    if (await skipButton.count() > 0) {
+      await skipButton.click();
+      this.onboardingClicked = true;
+    }
+
   }
 
   async getDashboard(): Promise<Locator> {

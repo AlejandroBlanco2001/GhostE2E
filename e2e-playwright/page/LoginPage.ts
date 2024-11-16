@@ -25,7 +25,7 @@ export class LoginPage {
       try {
         attempts++;
         await this._login();
-      } catch (e) {}
+      } catch (e) { }
     }
   }
 
@@ -79,17 +79,7 @@ export class LoginPage {
   }
 
   async userIsLoggedIn(): Promise<boolean> {
-    try {
-      const skipOnboarding = await this.page.locator("#ob-skip").first();
-
-      if (skipOnboarding) {
-        await skipOnboarding.click();
-      }
-    } catch (e) {
-      console.log("Onboarding not found");
-    }
-
-    await this.page.goto(Urls.dashboard, { waitUntil: "networkidle" });
-    return this.page.url().includes("dashboard");
+    await this.page.goto(Urls.dashboard, { waitUntil: 'networkidle' });
+    return this.page.url().includes('dashboard');
   }
 }

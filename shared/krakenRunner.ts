@@ -1,6 +1,6 @@
 import { spawnSync } from "child_process";
 import * as fs from "fs";
-import { VERSION } from "./config";
+import { VERSION, VISUAL_REGRESSION_TESTING } from "./config";
 
 export function runKraken() {
   const featuresDir = "./features";
@@ -8,6 +8,11 @@ export function runKraken() {
   let files = fs
     .readdirSync(featuresDir)
     .filter((f) => f.endsWith(".feature") || f.endsWith(".commented"));
+
+  if (VISUAL_REGRESSION_TESTING) {
+    // skip those that start with Version if we are running VRT
+    files = files.filter((f) => f.startsWith("VRT"));
+  }
 
   files = files.map((f) => f.replace(".commented", "")).sort();
 
@@ -28,12 +33,6 @@ export function runKraken() {
 
     if (!file) {
       console.error("Invalid file encountered. Skipping...");
-      currentFileIndex++;
-      continue;
-    }
-
-    if(file.startsWith("Version") && VERSION !== "5.96.0"){
-      console.log(`Skipping ${file} as it is not compatible with the current version`);
       currentFileIndex++;
       continue;
     }

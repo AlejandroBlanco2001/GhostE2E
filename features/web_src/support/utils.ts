@@ -35,9 +35,14 @@ export function saveScenarioReportInfo(scenario: ScenarioInformation) {
   if (fs.existsSync(fname)) {
     data = JSON.parse(fs.readFileSync(fname, "utf8")) as ScenarioInformation[];
 
-    data = data.filter((s) => s.name !== scenario.name);
-
-    console.log("Adding scenario to report:", scenario.name);
+    // Check if the scenario already exists
+    if (data.some((s) => s.name === scenario.name)) {
+      console.log(`Scenario "${scenario.name}" already exists. Resetting file.`);
+      // Reset the file
+      data = [];
+    } else {
+      console.log("Adding scenario to report:", scenario.name);
+    }
   }
 
   data.push(scenario);

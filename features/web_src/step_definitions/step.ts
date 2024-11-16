@@ -4,7 +4,7 @@ import { Login } from './login';
 import type { Page } from 'puppeteer-core/lib/cjs/puppeteer/common/Page';
 import { Cookie, KrakenWorld } from '../support/support';
 import { ElementHandle } from 'puppeteer-core/lib/cjs/puppeteer/common/JSHandle';
-import { Urls, VERSION } from '../../../shared/config';
+import { Urls, VERSION, VISUAL_REGRESSION_TESTING } from '../../../shared/config';
 const isCI = process.env.CI || false;
 const defaultTiemout = isCI ? 15000 : 5000;
 
@@ -12,6 +12,10 @@ let numberOfMembers = 0;
 
 type ValueGeneratorCollection = {
   [key: string]: () => string
+}
+
+if (VISUAL_REGRESSION_TESTING) {
+  faker.seed(1);
 }
 
 const ValueGenerators: ValueGeneratorCollection = {
@@ -279,7 +283,7 @@ When('I create the post with title {string} and paragraph {string}', async funct
   await this.page.keyboard.press('Enter');
 
   // Fill the text inside the current cursor area
-  await this.page.keyboard.type(string2);  
+  await this.page.keyboard.type(string2);
 
   await this.page.waitForTimeout(1000);
 });
@@ -358,7 +362,7 @@ When("I save the {string}", async function (this: KrakenWorld, string: string) {
 When("I should see the {string} in that order sorted in the current page", async function (this: KrakenWorld, words: string) {
   const rows = await this.page.$$('.gh-posts-list-item');
   const items = words.split(',');
-  
+
   items.forEach(async (row, index) => {
     const currentRow = rows[index];
 
@@ -370,18 +374,18 @@ When("I should see the {string} in that order sorted in the current page", async
 
     if (!text.includes(row.trim())) {
       throw new Error(`Expected "${row}" but got "${text}"`);
-    }    
+    }
   })
 })
 
 When("I should see the number of members in the dashboard", async function (this: KrakenWorld) {
   const innerText = await this.page.evaluate(() => document.body.innerText);
 
-  if(!innerText){
+  if (!innerText) {
     throw new Error(`There is no text in the current page`);
   }
 
-  if(!innerText.includes(numberOfMembers.toString())) {
+  if (!innerText.includes(numberOfMembers.toString())) {
     throw new Error(`The number of members is not correct`);
   }
 });
@@ -392,7 +396,7 @@ When("I record the number of members currently", async function (this: KrakenWor
 
   // Grab all <th> elements on the page
   const ths = await this.page.$$('th');
-  
+
   // Loop through each <th> element
   for (let th of ths) {
     // Get the inner text of the <th> element
@@ -403,7 +407,7 @@ When("I record the number of members currently", async function (this: KrakenWor
       // Extract the number from the first part of the text (assuming it's the first word)
       const thTextSplitted = thText.split(' ')[0];
       const numberOfMembers = parseInt(thTextSplitted, 10);
-      
+
       // Return the number (you could save it in a context or do something with it)
       return numberOfMembers;
     }
@@ -447,21 +451,21 @@ When('I delete the {string}', async function (this: KrakenWorld, scope: string) 
 });
 
 When('I create a new page called {string}', async function (this: KrakenWorld, name: string) {
-    
+
   await ClickElement(this.page, GetSelector("pages/new page"));
-  await FillElement(this.page, "//textarea[@placeholder='Page title']",name,true,true);
-  await FillElement(this.page, "//div[@class='kg-prose']", faker.lorem.paragraph(2),true,true);
+  await FillElement(this.page, "//textarea[@placeholder='Page title']", name, true, true);
+  await FillElement(this.page, "//div[@class='kg-prose']", faker.lorem.paragraph(2), true, true);
   await ClickElement(this.page, "//button//span[text()='Publish']");
   await ClickElement(this.page, "//div[@class='gh-publish-cta']");
   await ClickElement(this.page, "//button[@data-test-button='confirm-publish']");
   await this.page.waitForTimeout(1000);
   await ClickElement(this.page, "//button[@class='close']");
-  
+
 
 });
 
 When('I open {string} page to edit', async function (this: KrakenWorld, name: string) {
-  
+
   await this.page.waitForTimeout(500);
   let selector = "//h3[text()='" + name + "']";
   await ClickElement(this.page, selector);
@@ -472,7 +476,7 @@ When('I open {string} page to edit', async function (this: KrakenWorld, name: st
 Then('I should see the {string} in the current page', async function (this: KrakenWorld, string: string) {
   const innerText = await this.page.evaluate(() => document.body.innerText);
 
-  if(!innerText){
+  if (!innerText) {
     throw new Error(`There is no text in the current page`);
   }
 
@@ -520,35 +524,34 @@ Then('I should see member saving failed', async function (this: KrakenWorld,) {
 })
 
 Then('page {string} should exists', async function (this: KrakenWorld, name: string) {
-    
+
   let url = Urls.main + "/" + name + "/";
   let response = await this.page.goto(url, { waitUntil: 'networkidle0' });
 
   if (!response.ok()) {
-      throw new Error(`La página ${url} no existe. Estado: ${response.status()}`);
+    throw new Error(`La página ${url} no existe. Estado: ${response.status()}`);
   }
 
 })
 
 Then('I should find a {string} element with {string} text', async function (this: KrakenWorld, element: string, text: string) {
-  
+
   let elemSelected = "";
   let selector = ""
 
-  if(element=="title"){
+  if (element == "title") {
     elemSelected = "h3";
-    selector = "//"  + elemSelected + "[text()='" + text + "']";
-  } else if (element=="button") 
-  {
+    selector = "//" + elemSelected + "[text()='" + text + "']";
+  } else if (element == "button") {
     elemSelected = "button";
-    selector = "//button//span[text()='" + text + "']"; 
+    selector = "//button//span[text()='" + text + "']";
   };
 
   let elementExists = await this.page.waitForXPath(selector, { timeout: 1000 })
-  .then(() => true)
-  .catch(() => false);
+    .then(() => true)
+    .catch(() => false);
 
-  if(!elementExists){
+  if (!elementExists) {
     throw new Error(`El elemento descrito con selector: ${selector}no se encuentra en la página`);
   }
 
@@ -591,7 +594,7 @@ Then('I should see tag saving {string}', async function (this: KrakenWorld, stat
 });
 
 Then('I should see the tag {string} saved', async function (this: KrakenWorld, internalTagName: string) {
-  const internalTag = await getElement(this.page,`[href="#/tags/hash-${internalTagName}/"]`);
+  const internalTag = await getElement(this.page, `[href="#/tags/hash-${internalTagName}/"]`);
   if (internalTag === null) throw new Error(`Couldn't find element with selector ${internalTag}`);
   if ((await internalTag === null)) {
     throw new Error(`Element ${internalTag} is null`);
