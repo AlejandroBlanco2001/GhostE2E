@@ -16,16 +16,6 @@ export class DashboardPage {
 
   async open() {
     await this.page.goto(Urls.dashboard, { waitUntil: "networkidle" });
-
-    try {
-      const skipOnboarding = await this.page.locator("#ob-skip").first();
-
-      if (skipOnboarding) {
-        await skipOnboarding.click();
-      }
-    } catch (e) {
-      console.log("Onboarding not found");
-    }
   }
 
   async getDashboard(): Promise<Locator> {
