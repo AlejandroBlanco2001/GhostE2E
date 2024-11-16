@@ -22,13 +22,55 @@ function pixelRunner(){
     const diff = new PNG({ width, height });
 
     pixelmatch(img1.data, img2.data, diff.data, width, height, options);
-    writeFileSync('diff.png', PNG.sync.write(diff));
 
-    const diffPath = '../screenshots/playwright/NON_VRT/EP006 Create Member/diff.png';
+    const diffPath = './results/diff.png';
     writeFileSync(diffPath, PNG.sync.write(diff));
 
-    console.log(`Imagen de diferencias guardada en: ${diffPath}`);
+    const reportPath = './results/report.html'
+    writeFileSync(reportPath, createReport());
+
+    console.log(`Consulte el Reporte en: ${reportPath}`);
 
 };
+
+function createReport(){
+    let reportHtml =`
+    <html>
+        <head>
+            <title> VRT Report </title>
+            <link href="index.css" type="text/css" rel="stylesheet">
+        </head>
+        <body>
+            <h1>Report VRT PixelMatch</h1>
+            
+            <div id="visualizer">
+            </div>
+        </body>
+    </html>`
+    return reportHtml;
+}
+
+function browser(){
+    return `<div class=" browser" id="test0">
+    <div class="imgline">
+      <div class="imgcontainer">
+        <span class="imgname">Reference</span>
+        <img class="img2" src="before-.png" id="refImage" label="Reference">
+      </div>
+      <div class="imgcontainer">
+        <span class="imgname">Test</span>
+        <img class="img2" src="after-.png" id="testImage" label="Test">
+      </div>
+    </div>
+    <div class="imgline">
+      <div class="imgcontainer">
+        <span class="imgname">Diff</span>
+        <img class="imgfull" src="./compare-.png" id="diffImage" label="Diff">
+      </div>
+    </div>
+  </div>`
+}
+
+
 
 pixelRunner();
