@@ -4,7 +4,7 @@ import { Login } from './login';
 import type { Page } from 'puppeteer-core/lib/cjs/puppeteer/common/Page';
 import { Cookie, KrakenWorld } from '../support/support';
 import { ElementHandle } from 'puppeteer-core/lib/cjs/puppeteer/common/JSHandle';
-import { Urls } from '../../../shared/config';
+import { Urls, VERSION } from '../../../shared/config';
 const isCI = process.env.CI || false;
 const defaultTiemout = isCI ? 15000 : 5000;
 
@@ -166,7 +166,6 @@ const Navigators: Record<string, Function> = {
     }
   },
   "create page": async (page: Page) => {
-    console.log(page.url())
     if (page.url().includes(Urls.listPage)) {
       await ClickElement(page, GetSelector("page/list/new"));
     } else {
@@ -303,27 +302,58 @@ async function findButtonForce(page: Page, expectedText: string) {
   throw new Error(`Couldn't find the button with text ${expectedText}`);
 }
 
-When('I save the {string}', async function (this: KrakenWorld, string: string) {
-  const publishButton = await findButtonForce(this.page, 'Publish')
+async function newPublishEntry(page: Page, entryType: "post" | "page") {
+  const publishButton = await findButtonForce(page, "Publish");
 
   publishButton.click();
 
-  await this.page.waitForTimeout(1000);
+  await page.waitForTimeout(1000);
 
-  const continueButton = await findButtonForce(this.page, 'Continue, final review →')
-  
+  const continueButton = await findButtonForce(
+    page,
+    "Continue, final review →"
+  );
+
   continueButton.click();
 
-  await this.page.waitForTimeout(1000);
+  await page.waitForTimeout(1000);
 
-  const finalPublishButton = await findButtonForce(this.page, `Publish ${string}, right now`)
+  const finalPublishButton = await findButtonForce(
+    page,
+    `Publish ${entryType}, right now`
+  );
 
   finalPublishButton.click();
 
-  await this.page.waitForTimeout(2000);
+  await page.waitForTimeout(2000);
 
-  await this.page.keyboard.press('Escape');
-}); 
+  await page.keyboard.press("Escape");
+}
+
+async function oldPublishEntry(page: Page, entryType: "post" | "page") {
+  //  return this.page.locator(".gh-publishmenu");
+  const publishMenu = await page.$(".gh-publishmenu");
+
+  if (!publishMenu) {
+    throw new Error("Publish menu not found");
+  }
+
+  await publishMenu.click();
+
+  await page.waitForTimeout(1000);
+
+  const publishButton = await findButtonForce(page, "Publish");
+
+  publishButton.click();
+}
+
+When("I save the {string}", async function (this: KrakenWorld, string: string) {
+  if (VERSION === "5.96.0") {
+    newPublishEntry(this.page, string as "post" | "page");
+  } else {
+    oldPublishEntry(this.page, string as "post" | "page");
+  }
+})
 
 When("I should see the {string} in that order sorted in the current page", async function (this: KrakenWorld, words: string) {
   const rows = await this.page.$$('.gh-posts-list-item');
@@ -367,15 +397,12 @@ When("I record the number of members currently", async function (this: KrakenWor
   for (let th of ths) {
     // Get the inner text of the <th> element
     const thText = await this.page.evaluate(element => element.innerText.trim(), th);
-    console.log(thText);  // Log to see if we get anything
 
     // Check if the <th> text contains 'Members'
     if (thText.includes('MEMBERS')) {
       // Extract the number from the first part of the text (assuming it's the first word)
       const thTextSplitted = thText.split(' ')[0];
       const numberOfMembers = parseInt(thTextSplitted, 10);
-
-      console.log('Number of members: ', numberOfMembers);
       
       // Return the number (you could save it in a context or do something with it)
       return numberOfMembers;
@@ -448,6 +475,8 @@ Then('I should see the {string} in the current page', async function (this: Krak
   if(!innerText){
     throw new Error(`There is no text in the current page`);
   }
+
+  await this.page.waitForTimeout(1000);
 
   if (!innerText.includes(string)) {
     throw new Error(`The text ${string} is not in the current page`);
