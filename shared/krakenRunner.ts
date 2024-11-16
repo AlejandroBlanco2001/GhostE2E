@@ -36,7 +36,7 @@ export function runKraken() {
     console.log(`Files remaining: ${files.slice(currentFileIndex + 1)}`);
     console.log("-".repeat(80));
 
-    if (files.includes("Version -") && VERSION !== "5.96.0") {
+    if (file.includes("Version -") && VERSION !== "5.96.0") {
       console.log("Skipping Version - feature file");
       currentFileIndex++;
     }
