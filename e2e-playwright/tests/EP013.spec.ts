@@ -22,6 +22,7 @@ test("EP013 Check new page are created", async ({
 
     // Verify if the new page exists
     const nuevapagina = await page.goto(`${URL}/prueba-creacion-pagina`, { waitUntil: "load" });
+    await page.setViewportSize({ width: 1920, height: 1080 });
     await takeScreenshot(page, testInfo, "Access Page Created");
     expect(nuevapagina?.status).not.toEqual(404);
 });

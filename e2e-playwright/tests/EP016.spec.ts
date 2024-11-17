@@ -34,5 +34,6 @@ test("EP016 - Verify create new @Tag", async ({
     await tagPage.saveTag();
     const response = await getSaveTagResponse();
     // Then It should create the tag and return the name
+    await takeScreenshot(page, testInfo, "Tag Created");
     expect(response.tags[0].name).toBe('Test Tag');
 });

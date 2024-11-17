@@ -11,7 +11,11 @@
     "execute-vrt-kraken-oldest": "CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npm run kraken",
     "execute-vrt-kraken-latest": "CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npm run kraken",
     "execute-vrt-kraken": "npm run execute-vrt-kraken-oldest; npm run execute-vrt-kraken-latest; npm run vrt-resemble",
-    "vrt-resemble": "tsc shared/vrtRunner.ts && node shared/vrtRunner.js"
+    "vrt-resemble": "tsc shared/vrtRunner.ts && node shared/vrtRunner.js",
+    "execute-vtr-playwright-base-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='4.5'; npx playwright test\"",
+    "execute-vtr-playwright-rc-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='5.96.0'; npx playwright test\"",
+    "vrt-pixelmatch-windows": "cd rvt-playwright/ && npx tsc && node vrtfile.js",
+    "execute-vrt-playwright-windows": "npm run execute-vtr-playwright-base-windows && npm run execute-vtr-playwright-rc-windows && npm run vrt-pixelmatch-windows"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +24,8 @@
     "@faker-js/faker": "^9.2.0",
     "@playwright/test": "^1.48.2",
     "@types/node": "^22.9.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "@types/resemblejs": "^4.1.3",
     "kraken-node": "^1.0.24",
     "source-map-loader": "^3.0.1",
@@ -34,7 +40,11 @@
     "chokidar": "^3.5.3",
     "commander": "^9.2.0",
     "express": "^4.18.1",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^2.6.1",
     "nunjucks": "^3.2.3",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
     "resemblejs": "^4.1.0"
   }
 }
