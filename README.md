@@ -116,16 +116,34 @@ Si se tienen problemas para correr las pruebas se puede consultar la manera como
 
 Siga las instrucciones descritas para correr [Playwright E2E](#playwright-e2e) (**ignorando el paso 3**), y luego:
 
-#### 1. Correr las pruebas en ambas versiones
+### 1. Ejecutar las pruebas y generar el reporte:
 
+Se elaboró un comando que ejecutará todas las pruebas construidas con Playwright, tanto para la versión **4.5** como para la vestión **5.96.0** de **Ghost** y una vez estas se hayan ejecutado, se generará el reporte a partir de las imágenes que fueron tomadas en cada prueba.
+Para lo anterior, ejecute el siguiente comando:
+
+```bash
+npm run execute-vrt-playwright-windows
+```
+
+> **Nota:** Como se puede ver en el comando, esta construido para ser ejecutado en una terminal powershell de windows. 
+
+### Revisar el reporte
+El reporte se construye en la carpeta llamada [results](https://github.com/AlejandroBlanco2001/GhostE2E/tree/main/rvt-playwright/results), ahí encontrará las imágenes que resultaron de la comparación entre las dos versiones de **Ghost** y una archivo html que contiene el informe con la comparación entre las imágenes.
+
+#### Alternativa para ejecutar las pruebas
+El script anterior, realiza los siguientes pasos, en caso de que falle, se puede intentar generar de manera manual
+
+Ejecutar las pruebas para ambas versiones de Ghost:
 ```bash
 CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npx playwright test
 CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npx playwright test
 ```
+Una vez se ejecuten las pruebas y se generen las imágenes, se puede ejecutar el siguiente comando para generar el reporte:
+```bash
+cd rvt-playwright/ && npx tsc && node vrtfile.js
+```
 
-#### 2. Procesar el reporte
-
-TODO
+Esto generará el reporte en la misma ubicación que se comentó anteriormente.
 
 ## Kraken VRT
 
