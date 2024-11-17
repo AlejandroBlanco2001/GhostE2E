@@ -11,7 +11,11 @@
     "execute-vrt-kraken-oldest": "CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npm run kraken",
     "execute-vrt-kraken-latest": "CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npm run kraken",
     "execute-vrt-kraken": "npm run execute-vrt-kraken-oldest; npm run execute-vrt-kraken-latest; npm run vrt-resemble",
-    "vrt-resemble": "tsc shared/vrtRunner.ts && node shared/vrtRunner.js"
+    "vrt-resemble": "tsc shared/vrtRunner.ts && node shared/vrtRunner.js",
+    "execute-vtr-playwright-base-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='4.5'; npx playwright test\"",
+    "execute-vtr-playwright-rc-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='5.96.0'; npx playwright test\"",
+    "vrt-pixelmatch-windows": "cd rvt-playwright/ && npx tsc && node vrtfile.js",
+    "execute-vrt-playwright-windows": "npm run execute-vtr-playwright-base-windows && npm run execute-vtr-playwright-rc-windows && npm run vrt-pixelmatch-windows"
   },
   "keywords": [],
   "author": "",
