@@ -23,6 +23,7 @@ test("EP019 - Verify tag slug limit", async ({
     // And I save the tag
     await tagPage.saveTag();
     // Then It should show an error
+    await takeScreenshot(page, testInfo, "Tag Saved");
     const error = await tagPage.getSaveFailure();
     expect(await error.isVisible()).toBeTruthy();
     expect(await error.innerText()).toBe('Retry');

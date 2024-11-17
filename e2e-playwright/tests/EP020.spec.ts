@@ -32,6 +32,7 @@ test("EP020 - Verify internal tag creation", async ({
     const response = await getSaveTagResponse();
     // And I navigate to the internal tags page
     await tagPage.openInternalTags();
+    await takeScreenshot(page, testInfo, "Internal page");
     // Then It should show the internal tag
     const internalTag = await tagPage.getInternalTagsList();
 
