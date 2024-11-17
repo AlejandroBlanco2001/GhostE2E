@@ -175,7 +175,7 @@ async function compareImagesWithResemblejs() {
   const oldScenarios = JSON.parse(toProcessOld);
   const newScenarios = JSON.parse(toProcessNew);
 
-  const vctReportDir = "vctReport";
+  const vctReportDir = "VRTReport";
   const outputImagesDir = path.join(vctReportDir, "outputImages");
 
   ensureDirSync(vctReportDir);

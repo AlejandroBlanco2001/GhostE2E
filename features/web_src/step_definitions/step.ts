@@ -72,6 +72,9 @@ const Selectors: SelectorsCollection = {
   ///////////////////////////////////PAGES///////////////////////////////////
   "page/list/new": 'a[href="#/editor/page/"]',
   "pages/new page": "//a//span[text()='New page']",
+  "tag/action/save": "//button/span[contains(., 'Save')]",
+  "tag/action/saved": "//button/span[contains(., 'Saved')]",
+  "tag/action/retry save": "//button/span[contains(., 'Retry')]",
 } as const
 
 function GetSelector(selector: string): string {
@@ -562,7 +565,7 @@ When('I enter tag name {string}', async function (this: KrakenWorld, name: strin
 });
 
 When('I save the tag', async function (this: KrakenWorld) {
-  await ClickElement(this.page, '[data-test-button="save"]');
+  await ClickElement(this.page, GetSelector("tag/action/save"));
 });
 
 When('I enter tag {string} with {int} characters', async function (this: KrakenWorld, field: string, numberOfCharacters: number) {
@@ -578,14 +581,14 @@ When('I enter tag {string} with {int} characters', async function (this: KrakenW
 
 Then('I should see tag saving {string}', async function (this: KrakenWorld, status: string) {
   if (status.includes('success')) {
-    let saveButton = await getElement(this.page, '[data-test-button="save"]');
+    let saveButton = await getElement(this.page, GetSelector("tag/action/saved"));
     let text = await saveButton.evaluate(element => element.textContent);
     if (!text?.includes('Saved')) {
       throw new Error(`Element ${saveButton} text content is null`);
     }
   }
   if (status === 'error') {
-    let saveButton = await getElement(this.page, '[data-test-button="save"]');
+    let saveButton = await getElement(this.page, GetSelector("tag/action/retry save"));
     let text = await saveButton.evaluate(element => element.textContent);
     if (!text?.includes('Retry')) {
       throw new Error(`Element ${saveButton} text content is null`);
