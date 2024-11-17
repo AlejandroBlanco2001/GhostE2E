@@ -15,8 +15,6 @@ test("EP006 Create member", async ({
     const loginPage = new LoginPage(page, testInfo);
     const membersPage = new MembersPage(page, testInfo);
 
-    console.log('EP006 Create member');
-
     // Given: I have logged in
     await loginPage.open();
     await loginPage.login();

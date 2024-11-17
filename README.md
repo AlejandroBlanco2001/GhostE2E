@@ -24,7 +24,9 @@ Workflows implementados:
 
 Estos corren en cada commit a master o en cada Pull request a master.
 
-## Playwright
+# E2E (Semana 5)
+
+## Playwright E2E
 
 ### Instrucciones
 
@@ -59,7 +61,7 @@ Para poder ejecutar las pruebas en Windows, haga uso del siguiente comando:
 npm run test-pw-regular-windows
 ```
 
-## Kraken
+## Kraken E2E
 
 ### Instrucciones
 
@@ -107,3 +109,38 @@ node .\node_modules\kraken-node\bin\kraken-node run
 ```
 
 Si se tienen problemas para correr las pruebas se puede consultar la manera como se hace en el [CI/Actions](https://github.com/AlejandroBlanco2001/GhostE2E/blob/main/.github/workflows/kraken.yml)
+
+# VRT (Semana 6)
+
+## Playwright VRT
+
+Siga las instrucciones descritas para correr [Playwright E2E](#playwright-e2e) (**ignorando el paso 3**), y luego:
+
+#### 1. Correr las pruebas en ambas versiones
+
+```bash
+CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npx playwright test
+CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npx playwright test
+```
+
+#### 2. Procesar el reporte
+
+TODO
+
+## Kraken VRT
+
+Siga las instrucciones descritas para correr [Kraken E2E](#kraken-e2e) (**ignorando el paso 3**), y luego:
+
+#### 1. Correr el comando
+
+```bash
+npm run execute-vrt-kraken
+```
+
+Este comando se encargará de correr Kraken en ambas versiones y realizar el reporte.
+
+#### 2. Acerca del reporte
+
+El reporte se generará en la carpeta: **VRTReport/comparison_report.html**
+
+El reporte será generado con ResembleJS y su lógica se encuentra en el script [vrtRunner.ts](https://github.com/AlejandroBlanco2001/GhostE2E/blob/main/shared/vrtRunner.ts)
