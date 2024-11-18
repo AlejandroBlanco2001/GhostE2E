@@ -130,7 +130,10 @@ npm run execute-vrt-playwright-windows
 ### Revisar el reporte
 El reporte se construye en la carpeta llamada [results](https://github.com/AlejandroBlanco2001/GhostE2E/tree/main/rvt-playwright/results), ahí encontrará las imágenes que resultaron de la comparación entre las dos versiones de **Ghost** y una archivo html que contiene el informe con la comparación entre las imágenes.
 
-#### Alternativa para ejecutar las pruebas
+> Nota: En caso de que el comando anterior falle, se sugiere realizar el proceso como se indica en la siguiente sección.
+
+### Alternativa para ejecutar las pruebas
+
 El script anterior, realiza los siguientes pasos, en caso de que falle, se puede intentar generar de manera manual
 
 Ejecutar las pruebas para ambas versiones de Ghost:
