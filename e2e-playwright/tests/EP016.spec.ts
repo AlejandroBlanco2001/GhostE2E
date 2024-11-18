@@ -18,8 +18,10 @@ test("EP016 - Verify create new @Tag", async ({
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
+    await takeScreenshot(page, testInfo, "Login");
     // And Navigate to the tag page
     await tagPage.open();
+    await takeScreenshot(page, testInfo, "Tag Page");
     // When I fill the tag name
     await tagPage.fillTagName('Test Tag');
 

@@ -15,7 +15,11 @@
     "execute-vtr-playwright-base-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='4.5'; npx playwright test\"",
     "execute-vtr-playwright-rc-windows": "powershell -Command \"$env:CI=1; $env:GHOST_VRT=1; $env:GHOST_VERSION='5.96.0'; npx playwright test\"",
     "vrt-pixelmatch-windows": "cd rvt-playwright/ && npx tsc && node vrtfile.js",
-    "execute-vrt-playwright-windows": "npm run execute-vtr-playwright-base-windows && npm run execute-vtr-playwright-rc-windows && npm run vrt-pixelmatch-windows"
+    "execute-vrt-playwright-windows": "npm run execute-vtr-playwright-base-windows && npm run execute-vtr-playwright-rc-windows && npm run vrt-pixelmatch-windows",
+    "vrt-pixelmatch": "cd rvt-playwright/ && npx tsc && node vrtfile.js",
+    "execute-vrt-playwright-base": "CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npx playwright test",
+    "execute-vrt-playwright-rc": "CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npx playwright test",
+    "execute-vrt-playwright": "npm run execute-vrt-playwright-base && npm run execute-vrt-playwright-rc && npm run vrt-pixelmatch"
   },
   "keywords": [],
   "author": "",

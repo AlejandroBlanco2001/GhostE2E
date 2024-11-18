@@ -16,13 +16,17 @@ test("EP018 - Verify tag description limit", async ({
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
+    await takeScreenshot(page, testInfo, "Login");
+
     // And Navigate to create tag page
     await tagPage.open();
+    await takeScreenshot(page, testInfo, "Tag Page");
 
     // When: I fill the tag description with more than 500 characters
     await tagPage.fillTagDescription('a'.repeat(501));
     // And I save the tag
     await tagPage.saveTag();
+    await takeScreenshot(page, testInfo, "Tag Create Error");
     // Then It should show an error
     const error = await tagPage.getSaveFailure();
     expect(await error.isVisible()).toBeTruthy();

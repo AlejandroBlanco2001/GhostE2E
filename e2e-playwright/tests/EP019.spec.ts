@@ -16,8 +16,11 @@ test("EP019 - Verify tag slug limit", async ({
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
+    await takeScreenshot(page, testInfo, "Login");
+
     // And Navigate to create tag page
     await tagPage.open();
+    await takeScreenshot(page, testInfo, "Tag Page");
     // When: I fill the tag slug with more than 191 characters
     await tagPage.fillTagSlug('a'.repeat(192));
     // And I save the tag

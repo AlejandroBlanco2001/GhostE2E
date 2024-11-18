@@ -16,8 +16,11 @@ test("EP020 - Verify internal tag creation", async ({
     // Given: User is logged in
     await loginPage.open();
     await loginPage.login();
+    await takeScreenshot(page, testInfo, "Login");
+
     // And Navigate to the create tag page
     await tagPage.open();
+    await takeScreenshot(page, testInfo, "Tag Page");
     // When I fill the tag name
     await tagPage.fillTagName('#Internal Tag');
     // And I save the tag
@@ -29,6 +32,8 @@ test("EP020 - Verify internal tag creation", async ({
         return responsePromise.json();
     }
     await tagPage.saveTag();
+    await takeScreenshot(page, testInfo, "Tag Created");
+
     const response = await getSaveTagResponse();
     // And I navigate to the internal tags page
     await tagPage.openInternalTags();
