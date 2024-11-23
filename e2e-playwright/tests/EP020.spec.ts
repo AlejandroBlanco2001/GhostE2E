@@ -32,9 +32,9 @@ test("EP020 - Verify internal tag creation", async ({
         return responsePromise.json();
     }
     await tagPage.saveTag();
-    await takeScreenshot(page, testInfo, "Tag Created");
-
     const response = await getSaveTagResponse();
+    await takeScreenshot(page, testInfo, "Tag Created");
+    
     // And I navigate to the internal tags page
     await tagPage.openInternalTags();
     await takeScreenshot(page, testInfo, "Internal page");
