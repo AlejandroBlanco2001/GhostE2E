@@ -176,6 +176,12 @@ export const Scenarios: ScenarioSchema = {
         data: { email: { kind: 'ip' } },
         model: 'member',
     },
+    ipv6Email: {
+        title: "[BUG] IPv6 Email",
+        oracle: false,
+        data: { email: { kind: 'ipv6' } },
+        model: 'member',
+    },
     quotedStartingDotEmail: {
         title: "Quoted Starting Dot Email",
         oracle: true,
@@ -195,8 +201,8 @@ export const Scenarios: ScenarioSchema = {
         model: 'member',
     },
     quotedBannedCharsEmail: {
-        title: "[BUG] Quoted Banned Chars Email",
-        oracle: false,
+        title: "Quoted Banned Chars Email",
+        oracle: true,
         data: { email: { kind: 'quotedBannedChars' } },
         model: 'member',
     },
@@ -357,10 +363,10 @@ export const Scenarios: ScenarioSchema = {
         data: { email: { kind: 'ip' } },
         model: 'staff',
     },
-    quotedBannedCharsStaffEmail: {
-        title: "[BUG] Quoted Banned Chars Email",
+    ipv6StaffEmail: {
+        title: "[BUG] IPv6 Email",
         oracle: false,
-        data: { email: { kind: 'quotedBannedChars' } },
+        data: { email: { kind: 'ipv6' } },
         model: 'staff',
     },
     normalStaffBio: {
@@ -793,11 +799,13 @@ function generateEmail(options: FieldOption): string {
     } else if (options.kind === 'consecutiveDots') {
         email = 'test@ghost..io';
     } else if (options.kind === 'firstDot') {
-        email = '.' + faker.internet.email();
+        email = '.' + faker.person.firstName() + '@' + faker.internet.domainName();
     } else if (options.kind === 'lastDot') {
         email = 'test.@' + faker.internet.domainName();
     } else if (options.kind === 'ip') {
         email = 'test@[' + faker.internet.ipv4() + ']';
+    } else if (options.kind === 'ipv6') {
+        email = 'test@[' + faker.internet.ipv6() + ']';
     } else if (options.kind === 'quotedStartingDot') {
         email = '".' + faker.word.noun() + '"@' + faker.internet.domainName();
     } else if (options.kind === 'quotedEndingDot') {
@@ -805,7 +813,7 @@ function generateEmail(options: FieldOption): string {
     } else if (options.kind === 'quotedConsecutiveDots') {
         email = '"test..test"@' + faker.internet.domainName();
     } else if (options.kind === 'quotedBannedChars') {
-        email = '"(),:;<>[]@example.com"' + faker.internet.domainName();
+        email = '"(),:;<>[]"@' + faker.internet.domainName();
     } else if (options.kind === 'quotedWhitespace') {
         email = '"test test"@' + faker.internet.domainName();
     } else if (options.kind === 'long') {
