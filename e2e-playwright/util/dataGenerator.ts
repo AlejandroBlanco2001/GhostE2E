@@ -146,6 +146,12 @@ export const Scenarios: ScenarioSchema = {
         data: { email: { kind: 'emoji' } },
         model: 'member',
     },
+    validEmojiEmail: {
+        title: "[BUG] Valid Emoji Email",
+        oracle: true,
+        data: { email: { kind: 'validEmoji' } },
+        model: 'member',
+    },
     consecutiveDotsEmail: {
         title: "Consecutive Dots Email",
         oracle: false,
@@ -203,7 +209,7 @@ export const Scenarios: ScenarioSchema = {
     normalNotes: {
         title: "Normal Notes",
         oracle: true,
-        data: { notes: { length: 500 } },
+        data: { notes: { length: 100 } },
         model: 'member',
     },
     emptyNotes: {
@@ -298,8 +304,8 @@ export const Scenarios: ScenarioSchema = {
         model: 'staff',
     },
     emojiStaffName: {
-        title: "[BUG] Emoji Name",
-        oracle: false,
+        title: "Emoji Name",
+        oracle: true,
         data: { name: { kind: 'emoji' } },
         model: 'staff',
     },
@@ -475,6 +481,12 @@ export const Scenarios: ScenarioSchema = {
         title: "Empty Facebook",
         oracle: true,
         data: { facebook: { omit: true } },
+        model: 'staff',
+    },
+    facebookOverFrontier: {
+        title: "[BUG] Facebook Over Frontier (50)",
+        oracle: true,
+        data: { facebook: { length: 51 } },
         model: 'staff',
     },
     // TAG SCENARIOS
@@ -776,6 +788,8 @@ function generateEmail(options: FieldOption): string {
         email = 'test@ghost';
     } else if (options.kind === 'emoji') {
         email = '😀@' + faker.internet.domainName();
+    } else if (options.kind === 'validEmoji') {
+        email = '✨❤️@' + faker.internet.domainName();
     } else if (options.kind === 'consecutiveDots') {
         email = 'test@ghost..io';
     } else if (options.kind === 'firstDot') {
@@ -807,11 +821,18 @@ function generateEmail(options: FieldOption): string {
 }
 
 function generateName(options: FieldOption): string {
-    let generator = () => faker.person.firstName();
-    return stringGenerator({
-        ...options,
-        generator,
-    });
+    let name = '';
+    if (options.kind === 'emoji') {
+        return '😀';
+    } else {
+        let generator = () => faker.person.firstName();
+        name = stringGenerator({
+            ...options,
+            generator,
+        });
+    }
+
+    return name;
 }
 
 function generateTagName(options: FieldOption): string {
@@ -938,8 +959,7 @@ let LoadedAP = false;
 function getFromPool(identifier: string, poolType: DataPoolType): Member | Staff {
     let pool: DataPool;
     if (poolType === 'dynamic') {
-        // Using dynamic therefor generating on the fly on the first time this
-        // method is called
+        // Generate pool
         if (!LoadedDP) {
             DynamicPool = generatePool(false);
             LoadedDP = true;
@@ -947,7 +967,7 @@ function getFromPool(identifier: string, poolType: DataPoolType): Member | Staff
         pool = DynamicPool;
     } else if (poolType === 'apriori') {
         if (!LoadedAP) {
-            // Using apriori therefor reading form file
+            // Read from file
             AprioriPool = JSON.parse(readFileSync(APRIORI_FILE, 'utf8')) as DataPool;
             LoadedAP = true;
         }
