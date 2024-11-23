@@ -6,6 +6,6 @@ export class CreatePagePage extends CreateEntity {
   async open() {
     const pageNew = `${URL}/ghost/#/editor/page`;
     await this.page.goto(pageNew, { waitUntil: "networkidle" });
-    takeScreenshot(this.page, this.testInfo, "create-page");
+    await takeScreenshot(this.page, this.testInfo, "create-page");
   }
 }
