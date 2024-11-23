@@ -2,6 +2,7 @@ import { chromium, Page, TestInfo } from "@playwright/test";
 import { VERSION, VISUAL_REGRESSION_TESTING } from '../../shared/config';
 import { startGhost } from "../../shared/runner.ts";
 import { LoginPage } from "../page/LoginPage";
+import { DataPoolType, ScenarioConfig } from "./dataGenerator.ts";
 
 let counter = 0;
 let baseDir = `./screenshots/playwright/`
@@ -34,4 +35,34 @@ export async function startGhostAndSetup() {
     await login.open();
     await login.setup();
     await browser.close();
+}
+
+export type Cookie = {
+    scenarios: ScenarioConfig[],
+    pool: DataPoolType,
+}
+
+export function nameDataScenario(cookie: Cookie, counter: number): string {
+    const parts: string[] = [];
+    const multipleScenarios = cookie.scenarios.length > 1;
+
+    cookie.scenarios.forEach((scenario, index) => {
+        if (multipleScenarios) {
+            parts.push(`S.${index + 1}`);
+        }
+        parts.push(
+            `${capitalize(scenario.model)}: ${scenario.title} (${scenario.oracle ? '+' : '-'}) |`
+        );
+    });
+
+    // Remove the trailing '|' if it exists
+    if (parts.length > 0 && parts[parts.length - 1].endsWith('|')) {
+        parts[parts.length - 1] = parts[parts.length - 1].slice(0, -2);
+    }
+
+    return `${counter}. [${cookie.pool}]: ${parts.join(' ')}`;
+}
+
+function capitalize(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
 }

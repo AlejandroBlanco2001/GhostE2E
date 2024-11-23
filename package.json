@@ -19,7 +19,9 @@
     "vrt-pixelmatch": "cd rvt-playwright/ && npx tsc && node vrtfile.js",
     "execute-vrt-playwright-base": "CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npx playwright test",
     "execute-vrt-playwright-rc": "CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npx playwright test",
-    "execute-vrt-playwright": "npm run execute-vrt-playwright-base && npm run execute-vrt-playwright-rc && npm run vrt-pixelmatch"
+    "execute-vrt-playwright": "npm run execute-vrt-playwright-base && npm run execute-vrt-playwright-rc && npm run vrt-pixelmatch",
+    "data-validation": "docker rm --force ghost-testing; npx playwright test --project=data --workers 1",
+    "generate-pool": "npx ts-node e2e-playwright/util/dataGenerator.ts"
   },
   "keywords": [],
   "author": "",

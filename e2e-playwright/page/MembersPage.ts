@@ -16,6 +16,8 @@ export class MembersPage {
   readonly saved: Locator;
   readonly retry: Locator;
   readonly invalidEmail: Locator;
+  readonly label: Locator;
+
 
   constructor(
     page: Page,
@@ -30,6 +32,7 @@ export class MembersPage {
     this.save = page.locator('button:has-text("Save")');
     this.saved = page.locator('button:has-text("Saved")');
     this.retry = page.locator('button:has-text("Retry")');
+    this.label = page.locator("input[type='search']");
     this.invalidEmail = page.locator(
       'p[class="response"] >> text="Invalid Email."'
     );
@@ -94,5 +97,59 @@ export class MembersPage {
       return false;
     }
     return true;
+  }
+
+  async createMemberDataValidation({ name, email, notes, labels }: { name?: string, email?: string, notes?: string, labels?: string[] }): Promise<boolean> {
+    await this.open();
+    await this.newMember.click();
+
+    if (name) {
+      await this.name.fill('');
+      await this.name.fill(name);
+    }
+
+    if (email) {
+      await this.email.fill('');
+      await this.email.fill(email);
+    }
+
+    if (notes) {
+      await this.notes.fill('');
+      await this.notes.fill(notes);
+    }
+
+    if (labels) {
+      if (Array.isArray(labels)) {
+        for (let l of labels) {
+          await this.label.type(l, { delay: 5 });
+          await this.label.focus();
+          await this.page.keyboard.press('Enter');
+        }
+      } else {
+        await this.label.type(labels, { delay: 5 });
+        await this.label.focus();
+        await this.page.keyboard.press('Enter');
+      }
+    }
+
+    let watchdog = [
+      this.retry.elementHandle({ timeout: 5000 }),
+      this.saved.elementHandle({ timeout: 5000 }),
+    ]
+    await this.save.click();
+
+    let result = await Promise.race(watchdog)
+    let text = await result?.innerText()
+    if (text) {
+      if (text.includes('Saved')) {
+        return true;
+      } else if (text.includes('Retry')) {
+        return false;
+      } else {
+        throw new Error('Unknown error');
+      }
+    } else {
+      throw new Error('Timeout');
+    }
   }
 }

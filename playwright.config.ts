@@ -42,6 +42,20 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'regular',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      testIgnore: ['data.spec.ts']
+    },
+    {
+      name: 'data',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      testMatch: ['data.spec.ts']
+    },
 
     // {
     //   name: 'firefox',
