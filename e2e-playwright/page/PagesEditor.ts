@@ -51,6 +51,7 @@ export class PagesEditor {
         let content1 = this.page.locator('.kg-prose');
         let content2 = this.page.locator('.koenig-editor__editor.__mobiledoc-editor');
 
+        // fill the first textarea with the random paragraph
         if (await content1.count() > 0) {
             await this.page.fill('.kg-prose', faker.lorem.paragraph());
         } else if (await content2.count() > 0) {
@@ -123,4 +124,13 @@ export class PagesEditor {
 
     }
 
+    createRandomName(): string {
+        return faker.lorem.words();
+    }
+
+    getDefaultUrl(name: string): string {
+        return name.toLowerCase().replace(/ /g, "-");
+    }
+
 }
+

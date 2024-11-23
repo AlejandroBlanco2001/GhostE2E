@@ -15,14 +15,16 @@ test("EP015 Check new page is visible in edition mode", async ({
     await loginPage.open();
     await loginPage.login();
 
+    // Create random name for the page
+    let randomNamepage = pagesEditor.createRandomName();
+
     // Navigate to Pages Editor and Create a new Page
     await pagesEditor.open();
-    let newPageName = "Prueba modo edicion";
-    await pagesEditor.createTestPage(newPageName);
+    await pagesEditor.createTestPage(randomNamepage);
     await takeScreenshot(page, testInfo, "Page Created");
 
     // Select edit option for the new Page
-    await pagesEditor.editPage(newPageName);
+    await pagesEditor.editPage(randomNamepage);
 
 
     // Verify if new page opens in edit mode
