@@ -6,8 +6,8 @@
   "scripts": {
     "kraken-compile": "npx tsc --build ./features/web_src/tsconfig.json",
     "kraken": "docker rm --force ghost-testing; npm run kraken-compile && npx ts-node shared/krakenRunner.ts",
-    "test-pw-regular": "docker rm --force ghost-testing; npx playwright test --project=chromium --workers 1",
-    "test-pw-regular-windows": "docker rm --force ghost-testing & npx playwright test --project=chromium --workers 1",
+    "test-pw-regular": "docker rm --force ghost-testing; npx playwright test --project=regular --workers 1",
+    "test-pw-regular-windows": "docker rm --force ghost-testing & npx playwright test --project=regular --workers 1",
     "execute-vrt-kraken-oldest": "CI=1 GHOST_VRT=1 GHOST_VERSION=4.5 npm run kraken",
     "execute-vrt-kraken-latest": "CI=1 GHOST_VRT=1 GHOST_VERSION=5.96.0 npm run kraken",
     "execute-vrt-kraken": "npm run execute-vrt-kraken-oldest; npm run execute-vrt-kraken-latest; npm run vrt-resemble",

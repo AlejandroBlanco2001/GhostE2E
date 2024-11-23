@@ -165,3 +165,26 @@ Este comando se encargará de correr Kraken en ambas versiones y realizar el rep
 El reporte se generará en la carpeta: **VRTReport/comparison_report.html**
 
 El reporte será generado con ResembleJS y su lógica se encuentra en el script [vrtRunner.ts](https://github.com/AlejandroBlanco2001/GhostE2E/blob/main/shared/vrtRunner.ts)
+
+## Data Validation Testing
+
+Para conocer el funcionamiento de las pruebas lo invitamos a consultar [la wiki](https://github.com/AlejandroBlanco2001/GhostE2E/wiki/Entrega-Semana-7-%E2%80%90-Data-Validation)
+
+## Playwright DV
+
+1. Siga las instrucciones descritas para correr [Playwright E2E](#playwright-e2e) (**ignorando el paso 3**), y luego:
+
+```bash
+npm run data-validation-complete
+```
+
+Este comando correrá 97 pruebas de data validation en **Playwright**
+
+2. Por último correremos las pruebas E2E realizadas en la semana 5. Las cualess fueron ajustadas para que se ejecuten usando un pool de datos random (faker).
+3. Para esto, ejecute el siguiente comando:
+
+```bash
+npm run test-pw-regular
+```
+
+Esto nos dará un total de 117 pruebas en **Playwright**.
