@@ -604,7 +604,7 @@ Then('I should see tag saving {string}', async function (this: KrakenWorld, stat
 Then('I should see the tag {string} saved', async function (this: KrakenWorld, internalTagName: string) {
   const internalTag = await getElement(this.page, `[href="#/tags/hash-${internalTagName}/"]`);
   if (internalTag === null) throw new Error(`Couldn't find element with selector ${internalTag}`);
-  if ((await internalTag === null)) {
+  if ((internalTag === null)) {
     throw new Error(`Element ${internalTag} is null`);
   }
 });
