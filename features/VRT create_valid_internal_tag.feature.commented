@@ -8,4 +8,4 @@ Scenario: As user I login and create a valid internal tag.
     When I enter tag name "|FAKE_TAG_INTERNAL_NAME|1"
     And I save the tag
     And I navigate to the "internal tags" functionality
-    Then I should see the tag "internal-tag" saved
+    Then I should see the tag "|FAKE_TAG_INTERNAL_NAME|1" saved
