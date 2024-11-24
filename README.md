@@ -175,16 +175,33 @@ Para conocer el funcionamiento de las pruebas lo invitamos a consultar [la wiki]
 1. Siga las instrucciones descritas para correr [Playwright E2E](#playwright-e2e) (**ignorando el paso 3**), y luego:
 
 ```bash
-npm run data-validation-complete
+npm run data-validation
 ```
 
-Este comando correrá 97 pruebas de data validation en **Playwright**
+Este comando correrá 98 pruebas de data validation en **Playwright**
 
-2. Por último correremos las pruebas E2E realizadas en la semana 5. Las cualess fueron ajustadas para que se ejecuten usando un pool de datos random (faker).
+2. Por último correremos las pruebas E2E realizadas en la semana 5. Las cuales fueron ajustadas para que se ejecuten usando un pool de datos random (faker).
 3. Para esto, ejecute el siguiente comando:
 
 ```bash
 npm run test-pw-regular
 ```
 
-Esto nos dará un total de 117 pruebas en **Playwright**.
+Esto nos dará un total de 118 pruebas en **Playwright**.
+
+## Kraken DV
+
+1. Siga las instrucciones descritas para correr [Kraken E2E](#kraken-e2e)
+
+Esto correrá las 20 pruebas de Kraken que también fueron ajustadas para utilizar un pool de datos random (faker).
+
+## Conclusión
+
+Al terminar la ejecución de las pruebas, se puede observar que se ejecutaron un total de 138 pruebas en **Playwright** y 20 pruebas en **Kraken**.
+
+Todas estas pruebas están implementadas también en el pipeline de [Github Actions](https://github.com/AlejandroBlanco2001/GhostE2E/actions). A continuación encontramos los workflows implementados:
+
+1. [Playwright](https://github.com/AlejandroBlanco2001/GhostE2E/blob/main/.github/workflows/playwright.yml) - Incluye las 20 pruebas E2E + 98 pruebas DV
+2. [Kraken](https://github.com/AlejandroBlanco2001/GhostE2E/blob/main/.github/workflows/kraken.yml) - Incluye las 20 pruebas E2E
+
+Toda la información de las pruebas recomendamos revisarla en [la wiki del repositorio](https://github.com/AlejandroBlanco2001/GhostE2E/wiki/Entrega-Semana-7-%E2%80%90-Data-Validation).
