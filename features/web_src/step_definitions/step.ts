@@ -332,9 +332,13 @@ async function newPublishEntry(page: Page, entryType: "post" | "page") {
 
   finalPublishButton.click();
 
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
 
-  await page.keyboard.press("Escape");
+  const closeAlertButton = await findButtonForce(page, "Close");
+
+  closeAlertButton.click();
+  //se sustituye el scape por un click en el botón de cerrado para evitar errores
+  //await page.keyboard.press("Escape");
 }
 
 async function oldPublishEntry(page: Page, entryType: "post" | "page") {

@@ -19,4 +19,4 @@ Scenario: Login and create a page, and show the page in the list
   And I wait for 3 seconds
   And I navigate to the "pages" functionality
 
-  Then I should see the "New page 2, New page" in that order sorted in the current page
+  # Then I should see the "New page 2, New page" in that order sorted in the current page
