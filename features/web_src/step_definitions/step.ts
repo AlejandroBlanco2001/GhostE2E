@@ -25,6 +25,8 @@ const ValueGenerators: ValueGeneratorCollection = {
   "|FAKE_LABEL|": faker.word.verb,
   "|FAKE_TITLE|": faker.commerce.productName,
   "|FAKE_CONTENT|": faker.commerce.productDescription,
+  "|FAKE_TAG_NAME|": faker.lorem.word,
+  "|FAKE_TAG_INTERNAL_NAME|": () => "#" + faker.lorem.word(),
 } as const;
 
 const SavedGeneratedValues: Record<string, string> = {};
@@ -573,13 +575,12 @@ When('I save the tag', async function (this: KrakenWorld) {
 });
 
 When('I enter tag {string} with {int} characters', async function (this: KrakenWorld, field: string, numberOfCharacters: number) {
+  var name = faker.string.alpha({ length: numberOfCharacters });
   if (field === 'slug') {
-    let slug = 'a'.repeat(numberOfCharacters);
-    await FillElement(this.page, 'input[name="slug"]', slug, true);
+    await FillElement(this.page, 'input[name="slug"]', name, true);
   }
   if (field === 'description') {
-    let desc = 'a'.repeat(numberOfCharacters);
-    await FillElement(this.page, 'textarea[name="description"]', desc, true);
+    await FillElement(this.page, 'textarea[name="description"]', name, true);
   }
 });
 

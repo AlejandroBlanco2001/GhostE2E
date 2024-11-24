@@ -5,7 +5,7 @@ Scenario: As user I login and create a tag with invalid slug.
     Given I login
     And I navigate to the "create tag" functionality
     And I wait for 2 seconds
-    When I enter tag name "Tag name"
+    When I enter tag name "|FAKE_TAG_NAME|1"
     And I enter tag "slug" with 192 characters
     And I save the tag
     Then I should see tag saving "error"
