@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { TagPage } from "../page/TagPage";
 import { takeScreenshot } from "../util/util";
+import { faker } from "@faker-js/faker";
 
 
 
@@ -13,7 +14,7 @@ test("EP016 - Verify create new @Tag", async ({
 }, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
-
+    const tagName = faker.lorem.word();
 
     // Given: User is logged in
     await loginPage.open();
@@ -23,7 +24,7 @@ test("EP016 - Verify create new @Tag", async ({
     await tagPage.open();
     await takeScreenshot(page, testInfo, "Tag Page");
     // When I fill the tag name
-    await tagPage.fillTagName('Test Tag');
+    await tagPage.fillTagName(tagName);
 
     async function getSaveTagResponse() {
         const responsePromise = await page.waitForResponse(async (response) => {
@@ -37,5 +38,5 @@ test("EP016 - Verify create new @Tag", async ({
     const response = await getSaveTagResponse();
     // Then It should create the tag and return the name
     await takeScreenshot(page, testInfo, "Tag Created");
-    expect(response.tags[0].name).toBe('Test Tag');
+    expect(response.tags[0].name).toBe(tagName);
 });

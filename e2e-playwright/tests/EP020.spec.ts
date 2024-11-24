@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { TagPage } from "../page/TagPage";
 import { takeScreenshot } from "../util/util";
+import { faker } from "@faker-js/faker";
 
 
 /*
@@ -12,6 +13,7 @@ test("EP020 - Verify internal tag creation", async ({
 }, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
+    const internalTagName = faker.lorem.word();
 
     // Given: User is logged in
     await loginPage.open();
@@ -22,7 +24,7 @@ test("EP020 - Verify internal tag creation", async ({
     await tagPage.open();
     await takeScreenshot(page, testInfo, "Tag Page");
     // When I fill the tag name
-    await tagPage.fillTagName('#Internal Tag');
+    await tagPage.fillTagName('#'+internalTagName);
     // And I save the tag
     async function getSaveTagResponse() {
         const responsePromise = await page.waitForResponse(async (response) => {
