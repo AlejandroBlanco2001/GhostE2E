@@ -4,6 +4,7 @@ Feature: Crear tag with invalid name EP017
 Scenario: As user I login and create a tag without name.
     Given I login
     And I navigate to the "create tag" functionality
+    And I enter tag "description" with 50 characters
     And I wait for 2 seconds
     When I save the tag
     Then I should see tag saving "error"

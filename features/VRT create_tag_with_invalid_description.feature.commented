@@ -5,7 +5,7 @@ Feature: Create tag with invalid description EP018
       Given I login
       And I navigate to the "create tag" functionality
       And I wait for 2 seconds
-      When I enter tag name "Tag name"
+      When I enter tag name "|FAKE_TAG_NAME|1"
       And I enter tag "description" with 501 characters
       And I save the tag
       Then I should see tag saving "error"
