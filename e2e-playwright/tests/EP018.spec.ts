@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { TagPage } from "../page/TagPage";
 import { takeScreenshot } from "../util/util";
+import { faker } from "@faker-js/faker";
 
 
 /*
@@ -12,6 +13,8 @@ test("EP018 - Verify tag description limit", async ({
 }, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
+    const tagName = faker.lorem.word();
+    const tagDescription = faker.string.alpha({ length: 501 });
 
     // Given: User is logged in
     await loginPage.open();
@@ -23,7 +26,8 @@ test("EP018 - Verify tag description limit", async ({
     await takeScreenshot(page, testInfo, "Tag Page");
 
     // When: I fill the tag description with more than 500 characters
-    await tagPage.fillTagDescription('a'.repeat(501));
+    await tagPage.fillTagName(tagName);
+    await tagPage.fillTagDescription(tagDescription);
     // And I save the tag
     await tagPage.saveTag();
     await takeScreenshot(page, testInfo, "Tag Create Error");

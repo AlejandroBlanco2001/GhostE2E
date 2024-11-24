@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { takeScreenshot } from "../util/util";
 import { TagPage } from "../page/TagPage";
+import { faker } from "@faker-js/faker";
 
 
 /*
@@ -12,6 +13,8 @@ test("EP017 - Verify @Tag should have a name", async ({
 }, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
+    const tagDescription = faker.lorem.sentence();
+    const tagSlug = faker.lorem.slug();
 
     // Given: User is logged in
     await loginPage.open();
@@ -23,6 +26,8 @@ test("EP017 - Verify @Tag should have a name", async ({
     await takeScreenshot(page, testInfo, "Tag Page");
 
     // When I save the tag without filling the name
+    await tagPage.fillTagDescription(tagDescription);
+    await tagPage.fillTagSlug(tagSlug);
     await tagPage.saveTag();
     const error = await tagPage.getSaveFailure();
     await takeScreenshot(page, testInfo, "Tag Create Error");

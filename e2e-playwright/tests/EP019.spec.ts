@@ -2,7 +2,7 @@ import test, { expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { TagPage } from "../page/TagPage";
 import { takeScreenshot } from "../util/util";
-
+import { faker } from "@faker-js/faker";
 
 /*
     Test Case: EP019 - Verify tag slug should be less than 191 characters
@@ -12,6 +12,10 @@ test("EP019 - Verify tag slug limit", async ({
 }, testInfo) => {
     const loginPage = new LoginPage(page);
     const tagPage = new TagPage(page);
+    const tagName = faker.lorem.word();
+    const tagDescription = faker.lorem.sentence();
+    const tagSlug = faker.string.alpha({ length: 192 });
+
 
     // Given: User is logged in
     await loginPage.open();
@@ -22,7 +26,9 @@ test("EP019 - Verify tag slug limit", async ({
     await tagPage.open();
     await takeScreenshot(page, testInfo, "Tag Page");
     // When: I fill the tag slug with more than 191 characters
-    await tagPage.fillTagSlug('a'.repeat(192));
+    await tagPage.fillTagName(tagName);
+    await tagPage.fillTagDescription(tagDescription);
+    await tagPage.fillTagSlug(tagSlug);
     // And I save the tag
     await tagPage.saveTag();
     // Then It should show an error
