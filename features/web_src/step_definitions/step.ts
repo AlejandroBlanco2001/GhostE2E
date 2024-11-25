@@ -459,10 +459,10 @@ When('I delete the {string}', async function (this: KrakenWorld, scope: string) 
   }
 });
 
-When('I create a new page called {string}', async function (this: KrakenWorld, name: string) {
+When('I create a new page with a random name', async function (this: KrakenWorld) {
 
   await ClickElement(this.page, GetSelector("pages/new page"));
-  await FillElement(this.page, "//textarea[@placeholder='Page title']", name, true, true);
+  await FillElement(this.page, "//textarea[@placeholder='Page title']", randomName, true, true);
   await FillElement(this.page, "//div[@class='kg-prose']", faker.lorem.paragraph(2), true, true);
   await ClickElement(this.page, "//button//span[text()='Publish']");
   await ClickElement(this.page, "//div[@class='gh-publish-cta']");
@@ -470,13 +470,18 @@ When('I create a new page called {string}', async function (this: KrakenWorld, n
   await this.page.waitForTimeout(1000);
   await ClickElement(this.page, "//button[@class='close']");
 
-
 });
 
-When('I open {string} page to edit', async function (this: KrakenWorld, name: string) {
+When('I choose a random name', async function (this: KrakenWorld) {
+  randomName = faker.commerce.productDescription();
+});
+
+var randomName = ""
+
+When('I open my random page to edit', async function (this: KrakenWorld) {
 
   await this.page.waitForTimeout(500);
-  let selector = "//h3[text()='" + name + "']";
+  let selector = "//h3[text()='" + randomName + "']";
   await ClickElement(this.page, selector);
   await this.page.waitForTimeout(1000);
 
@@ -534,7 +539,17 @@ Then('I should see member saving failed', async function (this: KrakenWorld,) {
 
 Then('page {string} should exists', async function (this: KrakenWorld, name: string) {
 
-  let url = Urls.main + "/" + name + "/";
+  let pageName = "";
+
+  if (name === "with the url of my random page"){
+    pageName = randomName.toLowerCase().replace(/ /g, "-");
+    pageName = pageName.toLowerCase().replace(",", "");
+    pageName = pageName.toLowerCase().replace(".", "");
+  } else {
+    pageName = name;
+  }
+
+  let url = Urls.main + "/" + pageName + "/";
   let response = await this.page.goto(url, { waitUntil: 'networkidle0' });
 
   if (!response.ok()) {
@@ -564,7 +579,22 @@ Then('I should find a {string} element with {string} text', async function (this
     throw new Error(`El elemento descrito con selector: ${selector}no se encuentra en la página`);
   }
 
-})
+});
+
+Then('I should find my random page', async function (this: KrakenWorld) {
+
+
+  let selector = "//h3[text()='" + randomName + "']";
+
+  let elementExists = await this.page.waitForXPath(selector, { timeout: 1000 })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!elementExists) {
+    throw new Error(`El elemento descrito con selector: ${selector}no se encuentra en la página`);
+  }
+
+});
 
 When('I enter tag name {string}', async function (this: KrakenWorld, name: string) {
   await FillElement(this.page, 'input[name="name"]', name, true);
